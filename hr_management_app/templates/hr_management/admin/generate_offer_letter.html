@@ -1,0 +1,224 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% block page_title %}
+<title>Generate Offer Letter</title>
+{% block custom_css %}
+
+<style>
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container {
+        background-color: white;
+    }
+
+    /* .form-row.center input[type="submit"] {
+        background-color: green;
+        color: white;
+    } */
+    .form-row {
+        justify-content: center;
+        display: flex;
+
+    }
+</style>
+
+{% endblock custom_css %}
+
+{% endblock page_title %}
+
+
+{% block main_content %}
+<div class="container-fluid" style="width: 900px;">
+    <div class="form-group">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div id="error-message" class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+        <div id="success-message" class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div class="container-fluid px-1 py-3 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-12">
+                <!-- <div class="card ">
+                    <div class="text-center mb-4 mb-2"> -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title; text-center">Generate Offer Letter</h3>
+                    </div>
+                    <form method="POST" action="{% url 'generate_offer_letter' %}" class="container">
+                        {% csrf_token %}
+                        <div class="form-row" style="padding-top:20px;">
+                            <div class="form-group col-md-5"style="padding-top:5px;">
+                                <label for="ctc">CTC:</label>
+                                <input type="text" id="ctc" name="ctc" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-1.5" style="padding-top:36px;">
+                                <select name="gender" class="form-control">
+                                  <option value="Mr">Mr</option>
+                                  <option value="Ms">Ms</option>
+                                  <option value="Mrs">Mrs</option>
+                                </select>
+                              </div>
+                            <div class="form-group col-md-4" style="padding-top:4px;">
+                                <label for="name">Name:</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <label for="email">Email:</label>
+                                <input type="text" id="email" name="email" class="form-control" required>
+                            </div>
+
+                            <div class="form-group col-md-5">
+                                <label for="offer_release_date">Offer Release Date:</label>
+                                <input type="date" id="offer_release_date" name="offer_release_date"
+                                    class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <label for="joining_date">Joining Date:</label>
+                                <input type="date" id="joining_date" name="joining_date" class="form-control" required>
+                            </div>
+
+                            <div class="form-group col-md-5">
+                                <label for="reporting">Reporting To</label>
+                                <input type="text" id="reporting" name="reporting" class="form-control" required>
+                            </div>
+
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <label for="time">Reporting Time</label>
+                                <input type="time" id="time" name="time" class="form-control" required>
+                            </div>
+
+                            <div class="form-group col-md-5">
+                                <label for="address">Address</label>
+                                <select name="address" id="address" class="form-control" required>
+                                    <option value="">Select an option</option>
+                                    <option
+                                        value="Olatech Solutions Limited, 815, Westport, Pan Card Club Road, Baner, Pune - 411045">
+                                        815, Westport, Pan Card Club Road, Baner, Pune - 411045.</option>
+                                    <option
+                                        value="Olatech Solutions Limited, 310, Rupa Solitaire, Millennium Business Park, Navi Mumbai - 400710 ">
+                                        310, Rupa Solitaire, Millennium Business Park, Navi Mumbai – 400710
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="form-row ">
+                            <div class="form-group col-md-5">
+                                <label for="designation">Designation</label>
+                                <input type="text" id="designation" name="designation" class="form-control" required>
+                            </div>
+
+                            <!-- Your existing HTML code -->
+                            <div class="form-group col-md-5">
+                                <label for="job_grade">Job Grade</label>
+                                <input type="text" id="job_grade" name="job_grade" class="form-control job-grade-input" required>
+                                <div class="error-message" style="color:red; display: none;">Please enter a valid job grade (1-10).</div>
+                            </div>
+
+                        </div>
+                        <div class="form-row ">
+                            <div class="form-group col-md-5">
+                                <label for="hr_name">HR Name</label>
+                                <input type="text" id="hr_name" name="hr_name" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label for="offer_accept_date">Offer Accept Date</label>
+                                <input type="date" id="offer_accept_date" name="offer_accept_date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row ">
+                        <div class="form-group col-md-5">
+                            <label>Department</label>
+                            <select name="department" class="form-control">
+                              <option value="">Select Department</option>
+                              <option value="DSBU">DSBU</option>
+                              <option value="HSBU">HSBU</option>
+                              <option value="SIBU">SIBU</option>
+                              <option value="SSBU">SSBU</option>
+                              <option value="SPBU">SPBU</option>
+                              <option value="HQ">HQ</option>
+                            </select>
+                          </div>
+                        
+                            <div class="form-group col-md-5">
+                                <label for="mobile_no">Mobile Number</label>
+                                <input type="text" id="mobile_no" name="mobile_no" class="mobile-number-input form-control" required>
+                                <span class="error-message" style="color: red; display: none;">Conact number must be 10 digits long.</span>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="form-row center" style="padding-bottom:20px;">
+                            <h5>
+                                <button class="btn btn-danger"> <i class="fa fa-download"></i> Download Offer
+                                    Letter</button>
+                            </h5>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            var errorMessage = document.getElementById("error-message");
+            var successMessage = document.getElementById("success-message");
+
+            if (errorMessage) {
+                errorMessage.style.display = "none";
+            }
+            if (successMessage) {
+                successMessage.style.display = "none";
+            }
+        }, 1000); // 30 seconds
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function validateMobileNumber(inputField) {
+            var mobileNumber = inputField.val();
+            var mobileRegex = /^[6-9]\d{9}$/;
+            var isValid = mobileRegex.test(mobileNumber);
+            inputField.closest('.form-group').find('.error-message').toggle(!isValid);
+            return isValid;
+        }
+
+        function validateJobGrade(inputField) {
+            var jobGrade = inputField.val();
+            var jobGradeRegex = /^(?:[1-9]|10)$/; // This regex allows numbers from 1 to 10.
+            var isValid = jobGradeRegex.test(jobGrade);
+            inputField.closest('.form-group').find('.error-message').toggle(!isValid);
+            return isValid;
+        }
+
+        // Mobile number validation
+        $('.mobile-number-input').on('input', function() {
+            validateMobileNumber($(this));
+        });
+
+        // Job grade validation
+        $('.job-grade-input').on('input', function() {
+            validateJobGrade($(this));
+        });
+    });
+</script>
+{% endblock main_content %}

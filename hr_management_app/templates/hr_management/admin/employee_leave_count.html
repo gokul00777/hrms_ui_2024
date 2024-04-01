@@ -1,0 +1,240 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% load static %}
+{% block custom_css %}
+{% block page_title %}
+
+{% endblock page_title %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<!-- Include FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<style>
+    #leaveCalendar {
+        /* max-width: 500px; */
+        margin: 0 auto;
+    }
+
+    .custom-chart {
+        width: 0%;
+        /* Set your desired width here */
+        height: 0%;
+        /* Set your desired height here */
+    }
+
+    .fc-event-time {
+        display: none;
+    }
+</style>
+{% endblock custom_css %}
+{% block main_content %}
+
+
+<div class="container mt-4">
+    <!-- Employee leave data -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">Remaining Leaves Of {{ selected_employee.first_name }}</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <!-- Employee leave data table content here -->
+                <thead>
+                    <tr>
+                        <th>Earn Leave</th>
+                        <th>Casual Leave</th>
+                        <th>Total Leave</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave_data in employee_leave_data %}
+                    <tr>
+                        <td>{{ leave_data.EarnLeave|floatformat:2 }}</td>
+                        <td>{{ leave_data.CasualLeave|floatformat:2 }}</td>
+                        <td>{{ leave_data.TotalLeaves|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Leave Applied History -->
+    <div class="card mt-4" id="calendar">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">Leave Applied History</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <!-- Leave report data table content here -->
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Leave From</th>
+                        <th>Leave To</th>
+                        <th>Leave Type</th>
+                        <th>Leave Message</th>
+                        <th>Leave Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in leave_report_data %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.leave_start_date }}</td>
+                        <td>{{ row.leave_end_date }}</td>
+                        <td>{{ row.leave_type }}</td>
+                        <td><textarea rows="3" cols="40">{{ row.leave_message }}</textarea></td>
+                        <td>
+                            {% if row.leave_status == 1 %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif row.leave_status == 2 %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% else %}
+                            <span class="badge bg-info">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- <div style="height: 300px; width: 300px;"><canvas id="leaveChart" class="custom-chart"></canvas></div>
+
+  
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">Leave Calendar</h3>
+        </div>
+        <div class="card-body">
+     
+            <div id="leaveCalendar"></div>
+        </div>
+    </div> -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Leave Chart -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">Remaining Leaves Chart</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart container -->
+                        <div style="height: 534px; width: 300px; display: flex; justify-content: center; align-items: center;" class="mx-auto">
+                            <canvas id="leaveChart" class="custom-chart"></canvas>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Leave Calendar -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">Leaves Calendar</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- FullCalendar container -->
+                        <div id="leaveCalendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Employees Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'manage_employee' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Employees
+        </a>
+    </div>
+    <br>
+</div>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    var leaveReportData = [
+        {% for row in leave_report_data %}
+        {% if row.leave_status != 2 %}
+
+        {
+        title: '{{ row.leave_type }}', // Set the title to the type of leave
+            start: '{{ row.leave_start_date|date:"Y-m-d" }}T00:00:00', // Specify time as midnight
+                end: '{{ row.leave_end_date|date:"Y-m-d" }}T23:59:59',   // Specify time as end of day
+                    color: (function () {
+                        if ('{{ row.leave_type }}' === 'casual') {
+                            return 'red';
+                        } else if ('{{ row.leave_type }}' === 'Earned') {
+                            return 'green';
+                        }
+                    })(),
+                        classNames: ['leave-event'], // Optional: Add a class for styling
+            },
+        {% endif %}
+        {% endfor %}
+    ];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('leaveCalendar');
+
+        // Initialize FullCalendar
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth', // Change the initial view as needed
+            events: leaveReportData  // Use the JavaScript variable with the data
+        });
+
+
+        calendar.render();
+    });
+
+</script>
+<script>
+    // Initialize arrays to store leave counts and labels
+    var leaveCounts = [];
+    var leaveLabels = [];
+
+    // Loop through the employee_leave_data to collect data
+    {% for leave_data in employee_leave_data %}
+    leaveCounts.push({{ leave_data.EarnLeave }}); // Push EarnLeave count to the array
+    leaveCounts.push({{ leave_data.CasualLeave }}); // Push CasualLeave count to the array
+    leaveCounts.push({{ leave_data.TotalLeaves }}); // Push TotalLeaves count to the array
+    leaveLabels.push('Earned Leave', 'Casual Leave', 'Total Leave'); // Push labels
+    {% endfor %}
+
+    // Create leave data object
+    var leaveData = {
+        labels: leaveLabels,
+        datasets: [
+            {
+                data: leaveCounts,
+                backgroundColor: ['green', 'red', 'blue'], // Colors for the chart segments
+            },
+        ],
+    };
+
+    // Get the canvas element and create the chart
+    var ctx = document.getElementById('leaveChart').getContext('2d');
+    var leaveChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: leaveData,
+        options: {
+            // Your chart options
+        }
+    });
+
+</script>
+{% endblock main_content %}

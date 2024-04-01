@@ -1,0 +1,132 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <br>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel info" style="text-align: center;">
+      <!-- Debugging output -->
+      <div class="image">
+        {% if user.employees.profile_pic %}
+        <img src="{{ user.employees.profile_pic }}" class="img-circle elevation-2" alt="User Image"
+          style="height: 80px; width: 80px;">
+        {% else %}
+        <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="Default User Image"
+          style="height: 80px; width: 80px;">
+        {% endif %}
+      </div><br>
+      <div class="info">
+        <b><a href="{% url 'employee_profile' %}" class="d-block">{{ user.first_name }} {{ user.last_name }}</a></b>
+      </div>
+    </div>
+
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+          {% url 'employee_home' as employee_home %}
+          <a href="{{ employee_home }}" class="nav-link {% if request.path == employee_home %} active {% endif %}">
+            <i class="nav-icon fas fa-home"></i>
+            <p>
+              Home
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'employee_apply_leave' as employee_apply_leave %}
+          <a href="{{ employee_apply_leave }}"
+            class="nav-link {% if request.path == employee_apply_leave %} active {% endif %}">
+            <i class="nav-icon fas fa-calendar"></i>
+            <p>
+              Apply for Leave
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          {% url 'employee_all_notification' as employee_all_notification %}
+          <a href="{{ employee_all_notification }}"
+            class="nav-link {% if request.path == employee_all_notification %} active {% endif %}">
+            <i class="nav-icon fas fa-bell"></i>
+            <p>
+              Notifications
+            </p>
+          </a>
+        </li>
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link" onclick="toggleSubMenu('sub-menu-4')">
+            <i class="nav-icon fas fa-money-check-alt"></i>
+            <p>
+              Onboarding
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul id="sub-menu-3" class="nav nav-treeview sub-menu">
+            <li class="nav-item">
+              {% url 'employee_onboarding' as employee_onboarding %}
+              <a href="{{ employee_onboarding }}"
+                class="nav-link {% if request.path == employee_onboarding %} active {% endif %}">
+                <i class="nav-icon fas fa-circle"></i>
+                <p>
+                  Onboarding
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'all_records' as all_records %}
+              <a href="{{ all_records }}" class="nav-link">
+                <i class="nav-icon fas fa-list"></i>
+                <p>
+                  Onboarding Record
+                </p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          {% url 'employee_salary_view' as employee_salary_view %}
+          <a href="{{ employee_salary_view }}" class="nav-link">
+            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+            <p>
+              Salary Slip
+            </p>
+          </a>
+        </li>
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link" onclick="toggleSubMenu('sub-menu-5')">
+            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+            <p>
+              Reimbursement
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul id="sub-menu-5" class="nav nav-treeview sub-menu">
+            <li class="nav-item">
+              {% url 'submit_reimbursement' as submit_reimbursement %}
+              <a href="{{ submit_reimbursement }}" class="nav-link">
+                <i class="nav-icon fas fa-receipt"></i>
+                <p>
+                  New Reimbursement
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'reimburesement_history' as reimburesement_history %}
+              <a href="{{ reimburesement_history }}"
+                class="nav-link {% if request.path == reimburesement_history %} active {% endif %}">
+                <i class="nav-icon fas fa-history"></i>
+                <p>
+                  Reimbursement History
+                </p>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>

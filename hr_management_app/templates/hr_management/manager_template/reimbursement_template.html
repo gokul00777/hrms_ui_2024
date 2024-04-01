@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reimbursement Reassessment</title>
+</head>
+<body>
+    <h1>Reimbursement Reassessment</h1>
+    <p>Reimbursement ID: {{ reimbursement.id }}</p>
+    <p>Reimbursement Status: {{ reimbursement.get_reimbursement_status_display }}</p>
+
+    {% if reimbursement.reimbursement_status == 'Approved' %}
+        <p>Reimbursement has already been approved.</p>
+    {% else %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="reason">Reassessment Reason:</label><br>
+            <textarea id="reason" name="reason" rows="4" cols="50" required></textarea><br>
+            <input type="submit" value="Submit Reassessment">
+        </form>
+    {% endif %}
+</body>
+</html>

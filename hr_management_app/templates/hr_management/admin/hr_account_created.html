@@ -1,0 +1,19 @@
+<body>
+    <p>Hello Dear <span style="font-weight: bold;">{{ first_name }} {{ last_name }},</span></p>
+
+    <p>Your account has been successfully created.</p>
+
+    <p>Here are your login credentials:</p>
+
+    <ul>
+        <li>Username : {{ email }}</li>
+        <li>Password : {{ password }}</li>
+    </ul>
+
+    <p>Please click the following link to access the 
+    application:</p>
+    <p><a href="{{ application_link }}">{{ application_link }}</a></p>
+
+
+    <p>Thank you!</p>
+</body>

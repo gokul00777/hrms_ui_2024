@@ -1,0 +1,47 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% block page_title %}
+{% endblock page_title %}
+
+{% block custom_css %}
+    <style>
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(41, 120, 41);
+            color: white;
+            width: 40%;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            text-align: center;
+            height: 30%;
+            width: 30%;
+            
+        }
+
+        .popup h2 {
+            margin-top: 0;
+        }
+
+    </style>
+{% endblock custom_css %}
+
+
+{% block main_content %}
+    <div id="popup" class="popup">
+        <h2 style="margin-top: 80px;">Offer Letter Sent</h2>
+        <p>The offer letter has been sent successfully.</p>
+    </div>
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        function closePopup() {
+            var popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
+    </script>
+{% endblock custom_js %}

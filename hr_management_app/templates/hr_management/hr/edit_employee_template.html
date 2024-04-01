@@ -1,0 +1,114 @@
+{% extends 'hr_management/hr/base_template.html' %}
+{% block page_title %}
+Edit Employee
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid" style="width: 900px;">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- general form elements -->
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Edit Employee</h3>
+          </div>
+          <form role="form" action="/edit_employee_save" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Email address</label>
+                  <input type="email" class="form-control" name="email" placeholder="Enter email"
+                    value="{{ employee.admin.email }}">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>First Name</label>
+                  <input type="text" class="form-control" placeholder="First Name" name="first_name"
+                    value="{{ employee.admin.first_name }}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Last Name</label>
+                  <input type="text" class="form-control" placeholder="Last Name" name="last_name"
+                    value="{{ employee.admin.last_name }}">
+                  <input type="hidden" name="employee_id" value="{{ employee.admin.id }}">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Username</label>
+                  <input type="text" class="form-control" placeholder="Username" name="username"
+                    value="{{ employee.admin.username }}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Designation</label>
+                  <input type="text" class="form-control" placeholder="Designation" name="designation"
+                    value="{{ employee.designation  }}">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Department</label>
+                  <select name="department" class="form-control">
+                    <option value="">Select Department</option>
+                    <option value="DSBU" {% if employee.department == "DSBU" %} selected {% endif %}>DSBU</option>
+                    <option value="HSBU" {% if employee.department == "HSBU" %} selected {% endif %}>HSBU</option>
+                    <option value="SPBU" {% if employee.department == "SPBU" %} selected {% endif %}>SPBU</option>
+                    <option value="SSBU" {% if employee.department == "SSBU" %} selected {% endif %}>SSBU</option>
+                    <option value="SIBU" {% if employee.department == "SIBU" %} selected {% endif %}>SIBU</option>
+                    <option value="HQ" {% if employee.department == "HQ" %} selected {% endif %}>HQ</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Manager</label>
+                  <select name="manager" id="manager-select" class="form-control">
+                    {% if not employee.admin.manager %}
+                    <option value="">Select Manager</option>
+                    {% endif %}
+                    {% for manager_option in manager %}
+                    <option value="{{ manager_option }}" {% if manager_option == employee.admin.manager %} selected {% endif %}>{{ manager_option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                {% endif %}
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="text-center" style="padding-bottom:20px;">
+              <button type="submit" class="btn btn-success ">Save Employee</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var defaultValue = "{{ employee.admin.manager }}"; // Replace this with the actual value from your database
+    var managerSelect = document.getElementById("manager-select");
+    for (var i = 0; i < managerSelect.options.length; i++) {
+      if (managerSelect.options[i].value === defaultValue) {
+        managerSelect.selectedIndex = i;
+        break;
+      }
+    }
+  });
+</script>
+
+<!-- /.content -->
+{% endblock main_content %}

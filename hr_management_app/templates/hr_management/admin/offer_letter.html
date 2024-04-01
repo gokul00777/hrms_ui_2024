@@ -1,0 +1,1720 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% load static %}
+{% block main_content %}
+
+{% block custom_css %}
+<style>
+
+    section {
+        /* border-collapse: collapse; */
+        width: 100%;
+    }
+
+
+    table {
+        /* border-collapse: collapse; */
+        width: 100%;
+        border-color: 1px solid black; /* Set the border color to a light color */
+        border-collapse: collapse;
+
+    }
+    
+
+    table td, table th {
+        border: 1px solid black;
+        padding: 5px;
+    }
+
+    th,
+    td {
+        text-align: left;
+        padding: 10px;
+        border-color: lightblue; /* Set the border color to a light color */
+    }
+
+    #tdd{
+        text-align: center;
+    }
+
+    .logo {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .logo-image {
+        max-height: 120px;
+        max-width: 100%;
+    }
+
+    .hr_logo{
+        text-align: 'left';
+        margin-bottom: 30px;
+
+    }
+    .hr_logo-image{
+        max-height: 150px;
+        max-width: 150px;
+    }
+
+    #number-container {
+        font-family: "Calibri", sans-serif;
+        font-size: 16px;
+    }
+
+    .number {
+        display: inline-block;
+        padding-right: 4px;
+    }
+
+    .separator {
+        display: inline-block;
+        padding: 0 4px;
+    }
+
+    .decimal {
+        display: inline-block;
+        padding-left: 4px;
+    }
+
+    .content {
+        border: none;
+        /* Remove the border */
+        background-color: white;
+    }
+
+    @page {
+        /* Set the size and margins for the pages */
+        size: A3;
+        margin-left: 1cm;
+        margin-right: 1cm;
+    }
+    @media print {
+        html, body {
+            zoom: 100%;
+        }
+        .page-break {
+        page-break-before: always;
+      }
+    }
+
+
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 10;
+        height: 0px;
+        text-align: center;
+    }
+
+
+    .declaration-div {
+        border: 1px solid black;
+        padding: 10px;
+    }
+
+    body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+        
+        h1,h2,h3,h4,h5 {
+            font-family: "Times New Roman", serif;
+            font-size: 24px;
+            /* font-style: italic; */
+        }
+
+    .custom-list {
+        list-style-type: upper-alpha;
+    }
+
+    .ol_upper {
+  list-style-type: upper-alpha; /* Set the list style type to uppercase letters */
+  /* font-weight: bold; */
+    }
+
+    .left-shift {
+    float: left;
+  }
+
+  .right-shift {
+    float: right;
+  }
+
+  .color{
+    background-color: gray;
+  }
+
+
+  .logo-container {
+        text-align: center;
+      }
+      .logo-image {
+        max-height: 120px;
+        max-width: 100%;
+      }
+  
+  h1{
+    font-size: 30px;
+  }
+  h2{
+    font-size: 30px;
+  }
+  h3{
+    font-size: 25px;
+  }
+
+  #type-I{
+    list-style-type:upper-roman;
+    
+  }
+
+</style>
+
+
+{% endblock custom_css %}
+
+
+<section class="content" id="number-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="text-center">
+                            <head>
+                                <div class="logo logo-container">
+                                    <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" height="120"
+                                        width="850" class="logo-image">
+                                </div>
+                            </head>
+                        </div>
+                        <form action="" class="container">
+                            <div>
+                                <h3>Ref: OTS/{{ formatted_date }}/{{ department }}/{{ offer_letter_id }}</h3>
+                                <h4 class="text-right"><b>Date: {{ offer_release_date }}</b></h4><br>
+                                <h1 class="text-center"><b>SUBJECT - OFFER OF APPOINTMENT </b></h1><br>
+                                <h4 class="text-left"><b> Dear {{ gender }}. {{ name }}</b></h4><br>
+                            </div>
+                            <p>It is our pleasure to welcome you to <b>Olatech Solutions Limited.</b></p>
+                            <div class="">
+                                <ol>
+                                     <li>
+                                        <p>With reference to our discussions, we are pleased to offer you an appointment in our Organization as <b>{{designation}}</b> on <b>Job Grade {{job_grade}}</b>, operating out of our <b>
+                                            {% if address == 'Olatech Solutions Limited, 310, Rupa Solitaire, Millennium Business Park, Navi Mumbai - 400710 ' %}
+                                            "Mumbai Office"
+                                            {% else %}
+                                            "Pune Office"
+                                            {% endif %}
+                                            </b></p>
+                                            
+                                            
+                                            
+                                    </li>
+                                    <li>
+                                        <p>Your "Annual Total Cash Compensation" will be <b>Rs {{offer_letter.total_cost_to_company }}/- (Indian Rupees {{amount_words}} Only).</b> Please refer <b> Annexure-A </b> for details on the
+                                            compensation and statutory deductions.</p>
+                                    </li>
+                                    <li>
+                                        <p>Your remuneration package is strictly confidential between you and here
+                                            after, referred as The Company and
+                                            should not be discussed with anyone nor divulged to anyone in any manner
+                                            whatsoever.</p>
+                                    </li>
+                                    <li>
+                                        <p>Your employment with us will be governed by terms and conditions as specified
+                                            in <b>Annexure-B</b></p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            You are required to join on <b> {{joining_date}}</b>. The Offer stands
+                                            withdrawn thereafter, unless the date isextended
+                                            and communicated to you in writing.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            On the date of joining, you are requested to report to <b>Mr. {{ reporting }}
+                                            </b> at  <b>{{ time }}</b> to complete the joining
+                                            formalities at <b> {{ address }} </b>
+                                            At the time of joining, you will be required to submit soft/hard copies of
+                                            the original documents as per <b>Annexure</b>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            Please note that this offer is subject to your being given a clear
+                                            background check either at the time of
+                                            reporting/joining or thereafter depending upon our receipt of the background
+                                            check report from the agency. In
+                                            case of any discrepancy in your background verification, the Company shall,
+                                            in its absolute discretion, withdraw
+                                            this Offer or terminate your employment with immediate effect, without any
+                                            notice pay, by giving you a written
+                                            notice there of.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            Kindly acknowledge acceptance of this Offer of Appointment by signing and
+                                            returning the 'acceptance copy' to
+                                            <b> hr@olatechs.com </b> latest by <b>{{ offer_accept_date }}</b>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            For any clarification / further Information on employment terms and
+                                            conditions, please get in touch with <b>{{ hr_name }} </b> 
+                                            (E-Mail: <a href="mailto:hr@olatechs.com">hr@olatechs.com</a> )
+                                        </p>
+                                    </li>
+                                </ol>
+                            </div><br>
+                            <p>For Olatech Solutions Limited</p>
+                            <div class="hr_logo">
+                                <img src="{% static 'images/hr_logo.jpg' %}" alt="hr_logo" class="hr_logo-image">
+                            </div>
+                            <p>Human Resource</p>
+
+
+                            <div class="page-break"></div>
+
+                            <div>
+                                  <div class="logo">
+                                    <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                  </div>
+                                <p><br><br>
+                                    Encl: <b>Annexure-A</b> (Salary Structure), <b> Annexure-B </b> (Important /Indicative Terms & Conditions of Employment),
+                                    <b>Annexure-C</b> (Medical Self declaration), <b>Annexure-D</b> (Check List of Documents), 
+                                    <b>Annexure-E</b> (Confidentiality Agreement), <b>Annexure F</b> – Intellectualproperty Assignment,
+                                        <b>Annexure-G</b> - General Covenant, <b>Annexure H</b> -(Code
+                                        of Conduct and Ethics)
+                                </p><br><br>
+
+                                <div>
+                                    <h5><b>Accepted</b></h5><br><br>
+                                    <h5><b>Date</b></h5><br><br>
+                                    <h5 class="text-right"><b>Signature Of Candidate</b></h5>
+                                </div>
+                            </div>
+
+                            <div class="page-break"></div>
+
+
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+                            <h2 class="text-center"><b>Annexure - A</b></h2><br>
+                            <table class="bordered-table">
+                                <tr>
+                                    <th>Name</th>
+                                    <td><b>{{ gender }}. {{ name }}</b></td>
+                                </tr>
+                                <tr>
+                                    <th>Designation</th>
+                                    <td><b>{{ designation }}</b></td>
+                                </tr>
+
+                                <tr>
+                                    <th>Job Grade</th>
+                                    <td><b>{{ job_grade }}</b></td>
+                                </tr>
+                                <tr>
+                                    <th>Location</th>
+                                    <td><b>{{ address }}</b></td>
+                                </tr>
+                           </table>
+                           <table border="1px">
+                            <thead class="text-center">
+                                <tr class="color">
+                                    <th colspan="1">COMPONENTS</th>
+                                    <th colspan="1" class="text-center">Per Annum<br>(All figures in Indian Rupees)</br></th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th>BASIC (@40% OF TOTAL FIXED PAY)</th>
+                                    <td id="tdd">{{ offer_letter.basic_pay|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>HRA (@50% OF BASIC)</th>
+                                    <td id="tdd">{{ offer_letter.hra|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>EMPLOYER'S CONTRIBUTION TO PROVIDENT FUND (@13% OF BASIC PAY)</th>
+                                    <td id="tdd">{{ offer_letter.employer_pf_contribution|floatformat:2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ESIC(@3.25% OF Gross Salary)</th>
+                                    <td id="tdd">{{ offer_letter.esic|floatformat:2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>FLEXIBLE COMPONENTS OF TFP</th>
+                                    <td id="tdd">{{ offer_letter.flexible_components_tfp|floatformat:2 }}</td>
+                                <tr>
+                                    <th>TOTAL FIXED PAY---------------------(A)</th>
+                                    <td id="tdd">{{ offer_letter.total_fixed_pay|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>TOTAL VARIABLE PAY (TVP) (Monthly Payment)-----(B)</th>
+                                    <td id="tdd">{{ offer_letter.total_variable_pay|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>INSURANCE PREMIUMS (towards GTLI, GMIP AND GPAI)-----(C)</th>
+                                    <td id="tdd">{{ offer_letter.insurance_premiums|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>TOTAL COST TO COMPANY -----(D)=(A)+(B)+(C)</th>
+                                    <td id="tdd">{{ offer_letter.total_cost_to_company|floatformat:2 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                            <br>
+                            <div>
+                                <ol>
+                                   <li>
+                                        <h5><b>Salary:</b></h5> Your salary will be paid monthly through bank transfer on the last day of the month, for which you would be required
+                                        to open a Bank A/c with any of the Companies specified Bank/s. Disbursement of Salary is subject to your regular attendance,
+                                        submission and updation of Permanent Account Number (PAN) details in the company's records.
+                                    </li> <br>
+                                    <li>
+                                        <h5><b>Flexible Benefit Plan (as applicable):</b></h5> Associates will also be given an option of restructuring their Flexible component of
+                                        their TFP as per the "Flexi Benefit Plan' under the following heads as per eligibility specified in the applicable policy:
+                                    </li><br>
+                                        <table>
+                                            <thead>
+                                                <tr class="color">
+                                                    <th colspan="1">COMPONENTS</th>
+                                                    <th colspan="1" class="text-center">MAX LIMIT</br></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th>Leave Travel Assistance</th>
+                                                    <td id="tdd">60000</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Meal Card</th>
+                                                    <td id="tdd">26400</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Residential Telephone Reimbursement</th>
+                                                    <td id="tdd">24000</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Car Lease</th>
+                                                    <td id="tdd">400000</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fuel & Maintenance</th>
+                                                    <td id="tdd">175000</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Driver Salary</th>
+                                                    <td id="tdd">180000</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Superannuation</th>
+                                                    <td id="tdd">100000</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>National Pension Scheme</th>
+                                                    <td id="tdd">132377</td>
+                                                </tr>
+                                            </tbody>
+                                        </table><br>
+                                        <p>
+                                            Post utilization of applicable max limits as mentioned above, balance amount if any, shall
+                                            be paid as taxable amount underAdditional Personal Pay component
+                                        </p>
+
+                                         <div class="page-break"></div>
+                                        
+                                        <div class="logo">
+                                            <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                        </div>
+                                        <h3>Annexure - A (Contd...)</h3>
+                                        <li>
+                                            <p><h5><b>Additional Benefits:</h5></b> Associates shall be eligible for below mentioned benefits:</p>
+                                            <ol class="ol_upper">
+                                                <li>
+                                                    <b>Group Term Life Insurance (GTLI) Coverage:</b> You would be eligible to be covered under the Group
+                                                    Term Life Insurance Cover, providing Life Insurance Coverage to the associates by paying a lump sum
+                                                    benefit of Rs. 20 LAKHS to the beneficiary on the unfortunate death of the associate.
+                                                </li><br>
+                                
+                                                <li>
+                                                    <b>Group Medical Coverage Plan (GMIP):</b> You would also be enrolled under the existing Medical
+                                                    Insurance scheme of the company with a cover of 5 LAKHS (floating cover) applicable to Self, Spouse, 2
+                                                    children & 2 parents. Cost of coverage of parents (if opted for) will be borne by you. If enrolment of parents
+                                                    is not opted for, the applicable cover (for self only OR self +spouse + up to 2 children) will be 4 LAKHS.
+                                                </li><br>
+                                            
+                                                <li>
+                                                    <b>Group Personal Accident Insurance (GPAI) Coverage:</b> You would be enrolled under the
+                                                    Company's GPAI scheme with a cover of up to 10 LAKHS payable in case of permanent disablement
+                                                    arising out of any unfortunate event of an accident.
+                                                </li><br>
+
+                                                <li>
+                                                    <b>Company can offer to pay the insurance amount to the employee, employee can then take
+                                                    the insurance policies individually from outside and get the income tax benefits.</b>
+                                                </li><br>
+                                          
+                                            </ol>
+                                            <li>
+                                                <h5><b>Deductions:</b></h5>
+                                                <ol class="ol_upper">
+                                                    <li>
+                                                       The Company shall make any deductions from the salary, as it may be stated in the respective policies from
+                                                       time to time. For example, deductions towards company provided transport, non-adherence as per disciplinary
+                                                       policies etc.
+                                                    </li>
+                                                </ol>
+                                            </li>
+                                        </li>
+                                </ol>  
+                            </div>
+                            <div class="page-break"></div>
+
+
+                            
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+                            <div>
+                                <h2 class="text-center"><b>Annexure - B</b></h2><br><br>
+                                <ol>
+                                    <li><h3><b>Employment Agreement</b></h3></li><br>
+                                    <ol class="custom-list">
+                                        <li>
+                                            <h5><b>Code of Conduct</b></h5>
+                                            <p>
+                                                During the period of your employment, you will work honestly, faithfully, diligently and
+                                                efficiently for the growth of The Company.
+                                            </p>
+                                        </li><br>
+                                        <li>
+                                            <h5><b>Secrecy</b></h5>
+                                            <p>
+                                                You are expected to maintain utmost secrecy with regard to the affairs of The Company
+                                                and shall keep confidential any information, whether written or oral, which relates to
+                                                internal controls, computer or data processing programs, algorithms, electronic data
+                                                processing applications, routines, subroutines, techniques or systems, or information
+                                                concerning the business or financial affairs and methods of operation or proposed
+                                                methods of operation, accounts, transactions, proposed transactions, security
+                                                procedures, trade secrets, know-how, or inventions of Olatech Solutions Limited. Or its
+                                                Affiliate, or any client, agent, contractor or vendor. You shall not disclose the identities
+                                                and other related information of any of its clients.
+                                            </p>
+                                            <p>
+                                                Breach of this provision shall be treated as a gross violation of the terms herein and your
+                                                services are liable to be terminated.
+                                            </p>
+                                        </li><br>
+                                        
+                                        <li>
+                                            <h5><b>Employee data</b></h5>
+                                            <p>
+                                                By accepting this Offer and furnishing your personal data to the Company, You are
+                                                according your irrevocable consent to Company to possess, deal with or handle your
+                                                sensitive personal data either by itself or through any third party agency duringthe term
+                                                of your employment with the Company subject however to the terms of the Privacy Policy
+                                                of the Company. You are aware that your personal data is confidential in nature and
+                                                Company shall process the same in the course of its business, in terms of its privacypolicy
+                                                with due and reasonable care.
+                                            </p>
+                                        </li><br>
+                                        <li>
+                                            <h5><b>Conflict of Interest</b></h5>
+                                            <p>
+                                                Your position with The Company calls for whole time employment and you will devote
+                                                yourself exclusively to the business of The Company. You will not take up any other work
+                                                for remuneration (part time or otherwise) or work on advisory capacity or be interested
+                                                directly or indirectly (except as shareholder or debenture holder) in any other trade or
+                                                business, during your employment with The Company, without written permission from
+                                                The Company. Contravention of this will lead to termination of your services from The
+                                                Company without any notice, with or without any liability on the part of The Company
+                                                for paymentof any compensation in lieu of such notice as per the procedure mentioned
+                                                in Section 3.
+                                            </p>
+                                        </li><br>
+                                        <li>
+                                            <h5><b>Non-Solicitation / Non-Compete:</b></h5>
+                                            <p>
+                                                You acknowledge that you have signed Covenant against Disclosure and Covenant Not to
+                                                Compete/Non-Solicitation (“Covenant”), which is incorporated into this Agreement by
+                                                reference and is made a part of this Agreement and that it constitutes an integral part of
+                                                the terms of your employment. In the Covenant, you have agreed that for a period of
+                                                twelve months following termination of your employment for any reason whatsoever you
+                                                also confirm and agree that theserestrictions are reasonable and are legitimately
+                                                required to protect the business interest of the Olatech Solutions Ltd.
+                                            </p>
+                                            <div class="page-break"></div>
+
+                                            
+                                            <div class="logo">
+                                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                            </div>
+                                            <ol type="I" id="type-I">
+                                                <li>
+                                                    You will not solicit business and/or sell services/products or build business relationship with customers, you
+                                                    were directlyor indirectly involved with, during your tenure in Olatech Solutions Ltd
+                                                </li>
+                                                <li>
+                                                    You will not interfere with its business relations, including but not limited to soliciting or providing services
+                                                    to any of Olatech’s clients (except as directed by Olatech Solutions Ltd), directly or indirectly.                               
+                                                </li>                                                
+                                                <li>
+                                                    You will not be employed by a client of Olatech Solutions Ltd for which you performed services while
+                                                    employed by Olatech.
+                                                </li>
+                                                <li>
+                                                    You will not solicit or induce Olatech Solutions Ltd associates to join a client or to compete with Olatech Solutions
+                                                    Ltd.
+                                                </li>
+                                                <li>
+                                                    You undertake not to solicit or induce or endeavor to solicit or induce any consultant, supplier or service
+                                                    provider tocease to deal with the Company and shall not interfere in any way with any relationship between
+                                                    a consultant, a supplier or a service provider and the Company
+                                                </li>
+                                            </ol><br>
+                                            <li>
+                                                <h5><b>Exclusivity of Services, Publications, Gifts/Anti-bribery:</b></h5>
+                                                <p>
+                                                    You shall devote all work efforts exclusively to The Company and the furtherance of its
+                                                    interests. Any engagement in additional activities for remuneration or any direct or
+                                                    indirect participation in other enterprises of any kind requires the prior written consent
+                                                    of The Company. The Company’s consent shall not be required for ordinary acquisitions
+                                                    of shares or other participation for investment purposes. Membership in the board of
+                                                    directors or supervisory board of other enterprises shall be subject to The Company’s
+                                                    prior written consent. Any publications and lectures by you on topics relating to The
+                                                    Company’s business or interests shall be subject to The Company’s prior written consent.
+                                                </p>
+                                                <p>
+                                                    You agree, to not accept or demand loans, rewards or other benefits, or promises
+                                                    thereof, from The Company’s clients or other persons with whom the Associate has
+                                                    official or business contacts in the context of the Associate’s activities for The Company,
+                                                    without The Company’s prior written consent.
+                                                </p>
+                                                <p>
+                                                    You hereby covenant and undertake that you will:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                        Not engage in any actions that are, or could be seen to be, bribery of foreign public officials as described in
+                                                        the OECD Convention on Combating Bribery of Foreign Public Officials in International Business
+                                                        Transactions, the Foreign Corrupt Practices Act of the United States of America (the “FCPA”), the Anti-
+                                                        Terrorism, Crime and Security Act 2001 and Bribery Act, 2010 of the United Kingdom of Great Britain and
+                                                        Northern Ireland; and
+                                                    </li>
+                                                    <li>
+                                                        Comply with all United Kingdom, United States, German and other Applicable Law prohibiting bribery and
+                                                        in doing so willprovide nothing of value to any government official.
+                                                    </li>
+                                                    <li>
+                                                        Not directly or indirectly offer or have offered or give or given or agree or agreed to give or given to any
+                                                        person any gift, success fee, rebate or consideration of any kind whatsoever including speed or facilitation
+                                                        money or indulge in any activity as an inducement or reward for influencing or carrying out any act and
+                                                        specifically in relation to any business opportunity or a customer including for the purposes of collection or
+                                                        for showing any favour or disfavour to any person or persons in relation to such performance.
+                                                    </li>
+                                                    <li>
+                                                        You hereby agree not to involve in receiving any gift/bribery during your tenure with the Company. You
+                                                        shall abide and follow the Company’s anti-bribery policy which is hereby incorporated for reference. This
+                                                        Company policy shall be amended from time to time
+                                                    </li>
+                                                </ul><br>
+                                                <li>
+                                                    <h5><b>Confidentiality / Non-Disclosure</b></h5>
+                                                    <ol class="ol_upper">
+                                                        <li>
+                                                            You must return to The Company, upon request, and in any event, upon termination of your
+                                                            employment, all documents and tangible items which belong to The Company or which refer to any
+                                                            confidential information and which are in your possession or under your control.
+                                                        </li>
+                                                        <li>
+                                                            You must, if requested by The Company, delete all confidential information from any reusable
+                                                            material and destroy all other documents and tangible items which contain or refer to any confidential
+                                                            information and which are in your possession or under your control.        
+                                                        </li>
+                                                        <div class="page-break"></div>
+
+                                                                                                    
+                                                        <div class="logo">
+                                                            <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                                        </div>
+                                                        <li>
+                                                            All software, systems, ideas, concepts, designs, documentation or any other material produced by
+                                                            you, during the period of your assignment to the Olatech will either be Intellectual Property of the
+                                                            Olatech or that of its customers. You will not have any rights to such material as described above.
+                                                        </li>
+                                                    </ol>
+                                                    <p>
+                                                        You shall execute / sign the Confidentiality Agreement as and when required by Olatech
+                                                        Solutions Limited or the Client.
+                                                    </p>
+                                                </li><br>
+                                                <li>
+                                                    <h5><b>Non-Disparagement Obligations</b></h5>
+                                                    <p>
+                                                        You covenant and agree that, during the term of your employment and anytime
+                                                        thereafter, neither you nor any of your legal heirs or any person acting on your/their
+                                                        behalf, will in any way publicly disparage, bring into disrepute, defame, libel, slander or
+                                                        otherwise criticize the Company, its subsidiaries, affiliates, successors, assigns, officers,
+                                                        directors (including any former directors/ officers of the Company or its subsidiaries),
+                                                        employees, shareholders, agents, attorneys or representatives, or any of their clients,
+                                                        customers, partners, other service providers, or any of their products or services, in any
+                                                        manner that would damage the business or reputation of the Company or any of its
+                                                        clients, customers, partners, other service providers. Any violation of this section shall
+                                                        necessitate an investigation and appropriate disciplinary action including termination
+                                                        from the services and/ or appropriate legal action.
+                                                    </p>
+                                                </li>
+                                        </li>
+                                    </ol>
+                                    </li><br>
+                                    <li>
+                                        <h3><b>Assignments/Transfer/Deputation</b></h3>
+                                        <p>
+                                            Though you have been engaged for a specific position, The Company reserves the right
+                                            to send you ontraining/deputation/secondment/transfer/assignments to sister
+                                            companies, associate companies, clients’ locations or third parties whether in India or
+                                            abroad. In such case, the terms and conditions of service applicable to the new
+                                            assignment will govern you.
+                                        </p>
+                                        <p>
+                                            You shall, only at the request of The Company, enter into a direct agreement or
+                                            undertaking with any customer to whom you may be assigned/seconded/deputed
+                                            accepting restrictions as such customer may reasonably require for the protection
+                                            of its legitimate interests.
+                                        </p>
+                                    </li><br>
+                                    <li>
+                                        <h3><b>Termination of Employment</b></h3>
+                                        <ol class="ol_upper">
+                                            <li>
+                                                Either party can terminate this employment by serving a notice of 90 days on the other. The Company may at
+                                                its absolute discretion make a payment representing salary (basic) in lieu of notice of termination. However,
+                                                for cause like misconduct, gross negligence, wilful insubordination or disobedience, misbehaviour or non-
+                                                performance, Olatech Solutions Limited. May terminate your services with immediate notice. The Company
+                                                shall have the right to place you under suspension onsubsistence allowance and benefits as applicable pending
+                                                any investigation into potential dishonesty, gross misconduct, misappropriation, gross negligence, fraud or
+                                                other circumstances, which expressly provides for termination of your employment which if proved, would
+                                                entitle The Company to dismiss your services summarily.
+                                            </li>
+                                            <li>
+                                                In the event of your serving on The Company a notice of termination of employment by submitting a
+                                                resignation letter, your release will be governed by the relevant policies in force at that point in time, subject
+                                                to satisfactory handing over of your duties, responsibilities, Company documents, Company assets, etc. to the
+                                                relevant parties.
+                                            </li>
+                                            <li>
+                                                In case of Associates who are governed by any other service agreement(s) for serving a minimum stipulated
+                                                period, the associate will need to mandatorily fulfil requirements of <b>Clause 3(a)</b> along with applicable exit
+                                                policy clauses under stipulatedservice period agreed to and provided there in.
+                                            </li>
+                                            <li>
+                                                Unauthorized absence or absence without permission from duty for a continuous period of 7 working days
+                                                would make you lose your lien on employment. In such case your employment shall automatically come to an
+                                                end without any notice of termination.
+                                            </li>
+                                            <div class="page-break"></div>
+
+                                                                                        
+                                            <div class="logo">
+                                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                            </div>
+                                            <li>
+                                                You will be governed by The Company’s laid down Code of Conduct and if there is any breach of the same or
+                                                non- performance of contractual obligation or the terms and conditions laid down in this agreement, your
+                                                service could be terminated as per the procedure mentioned in <b>Clause 3(a)</b> herein above. The Company
+                                                further reserves the right to invoke other legal remedies as it deems fit to protect its legitimate interests.
+                                            </li>
+                                            <li>
+                                                Reference check will be made from your previous employers and other references as may be deemed
+                                                appropriate. In case there is any adverse report against you which may be detrimental to the interests of The
+                                                Company or if the information furnished by you is not true, The Company reserves the right to terminate your
+                                                services as per the procedure mentioned in <b>Clause 3(a)</b> herein above on the grounds of misrepresentation
+                                                of facts.
+                                            </li>
+                                            <li>
+                                                In addition to The Company’s right to carry the above verifications, you shall fill in and sign the Criminal
+                                                DisclosureDeclaration Form. In the event you have been accused, charged and/or convicted for any criminal
+                                                offence, at any time whether prior or subsequent to your joining The Company, you shall make full disclosure
+                                                of the same and furnish all necessary documents in support thereof. In the event you have been accused,
+                                                charged and/or convicted for any criminal offence, your joining shall be subject to specific written confirmation
+                                                from The Company. The Company at its sole discretion reserves the right to terminate your employment as
+                                                mentioned in <b>Clause 3(a)</b> or take appropriate disciplinary action against you or revoke this Offer Letter. In
+                                                the event of suppression of any facts, The Company shall be entitled to take such other action at any time as it
+                                                may deem fit.
+                                            </li>
+                                            <li>
+                                                The Company reserves the right to carry out banned/ illegal drugs/narcotic substance screening tests on you
+                                                at any point of time during your tenure. You understand and acknowledge that this is a mandatory requirement
+                                                and you confirm that you have no objections whatsoever if such checks, banned/ illegal drugs/narcotic
+                                                substance screening tests and verifications are carried out by The Company or a third party agency engaged by
+                                                The Company. Arising out of such verification or check or otherwise, if it is detected that the information
+                                                furnished by you in your application is mis-stated or is unstated or document submitted by you are not correct
+                                                or banned/ illegal drugs/narcotic substance screening tests, results are positive, The Company shall, at its sole
+                                                discretion be entitled to fore with terminate your employment as per the procedure mentioned in <b> Clause 3(a)</b>
+                                                herein above and/or revoke your appointment with The Company, without further reference in the
+                                                matter.
+                                            </li>
+                                            <li>
+                                                <b>Probation & Confirmation:</b> Employee will be initially on probation for a period of 6 (Six) months during which
+                                                you may be removed from your appointed post by giving 15 (Fifteen) days notice or reason thereof if not
+                                                found satisfactory as per performance reviews. The period of probation can be extended at the discretion
+                                                of management and you will continue to be on probation till an order of confirmation has been issued in
+                                                writing.
+                                            </li>
+                                        </ol><br>
+                                        <li>
+                                            <h3><b>Statement of Facts:</b></h3>
+                                            <ol class="ol_upper">
+                                                <li>
+                                                    It must be specifically understood that this offer is made based on your proficiency on
+                                                    Technical/Professional skills you have declared to possess as per the application, and on the ability to
+                                                    handle any assignment/job independently anywhere in India or overseas. In case, at a later date, any of
+                                                    your statements/particulars furnished are found to be false or misleading, or your performance is not up
+                                                    to the mark or falls short of the minimum standards set by The Company, The Company shall have theright
+                                                    to terminate your services forthwith without giving any notice, notwithstanding any other terms and
+                                                    conditions stipulated here in.
+                                                </li>
+                                                <li>
+                                                    You confirm and represent that there exists no personal circumstances which are likely to affect your
+                                                    liability to dischargeyour obligations in the course of your employment. You further undertake to notify,
+                                                    your line manager and HR Manager immediately of any material change in personal circumstances that
+                                                    may have impact on the status of your employment including, but not limited to, criminal convictions
+                                                    and/or cases pending, health issues, right to work in the country where work is to be performed etc.
+                                                </li>
+                                            </ol>
+                                        </li><br>
+                                        <li>
+                                            <h3><b>Company Policies</b></h3>
+                                            <p>
+                                                You are required to comply with all the policies of the Company including but not
+                                                limited to the Code of Ethical Business Conduct, the Policy on Prevention of Sexual
+                                                Harassment and such other policies, as communicated to the associates of Olatech
+                                                from time to time. In case of any violation or failure to comply with such Company
+                                                Policy/policies, the Employee shall be subjected to the disciplinary action as per
+                                                company policy. 
+                                            </p>
+                                                
+                                            <div class="page-break"></div>
+
+                                                                                        
+                                            <div class="logo">
+                                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                            </div>
+
+                                            <p>
+                                                These policies are available on Olatech’s intranet. You are
+                                                requested to visit the site at frequent intervals to get all updates / changes. By
+                                                signing a copy of this letter, you are consenting that you will visit the intranet site
+                                                and get familiar with Olatech’s policies. Olatech reserves the right to interpret,
+                                                change, suspend or terminate any of its benefits, policy plans or programs in
+                                                accordance with its needs from time to time.
+                                            </p>
+                                        </li><br>
+                                        <li>
+                                            <h3><b>Personal Indebtedness</b></h3>
+                                            <p>
+                                                Olatech Solutions Limited shall not be responsible for personal indebtedness or
+                                                other liabilities incurred by you, during/prior to your employment with Olatech
+                                                Solutions Limited You understand and accept that you shall have no authority to
+                                                pledge the credit of Olatech Solutions Limited to any person or entity without
+                                                Olatech Solutions Limited's prior written authorization.
+                                            </p>
+                                        </li><br>
+                                        <li>
+                                            <h3><b>Restraints</b></h3>
+                                            <h4>
+                                                <b>Access to Information</b>
+                                            </h4>
+                                            <p>
+                                                Information is available on need to know basis for specified groups. The network
+                                                file server is segregated to allow individual sectors for projects and units. Access to
+                                                these are authorized through access privileges approved by unit Mentors or Project
+                                                Mentors.
+                                            </p>
+                                        </li>
+                                    </li>
+
+                                    <div>
+                                        <h4><b>Authorization</b></h4>
+                                        <p>
+                                            Only those authorized by a specific power of attorney may sign legal documents,
+                                            representing The Company.
+                                        </p>
+                                        <h4><b>Smoking</b></h4>
+                                        <p>              
+                                            We owe and assure a smoke free environment for our Associates. Barring some areas,
+                                            the entire office premises including conference rooms, lobbies, is declared as "No-
+                                            Smoking Zone".
+                                        </p>
+                                        <h4><b>Passwords</b></h4>
+                                        <p>
+                                            Access to our network, development environment and MS-Exchange is through individual's
+                                            password. For security reasons it is essential to maintain confidentiality of the same.
+                                        </p>
+                                        <h4><b>Unauthorized Software</b></h4>
+                                        <p>
+                                            You shall not install, download, copy and duplicate any unauthorized or unlicensed
+                                            software, programs, games, attachments on toyour computer systems.
+                                        </p>
+                                        <h4><b>Security</b></h4>
+                                        <p>
+                                            Security is an important aspect of our communication and office infrastructure. We have
+                                            security personnel deployed on all the floors who take care of the security. Those of you
+                                            who wish to work late or early hours are requested to produce their identity cards to the
+                                            Security personnel on demand. If there is a need to take some of the
+                                            equipment's/infrastructure out of the office premises for any reason the associate shall
+                                            obtain the gate pass from the security staff after the authorization from your mentor.
+                                        </p>
+                                        <p>
+                                            The communication security is maintained by controlling physical access to computer
+                                            systems, disabling all workstation floppydisk drives, and a Company-wide awareness
+                                            about the need for protection of intellectual property and sensitive customer
+                                            information. For some projects, The Company uses sophisticated data encryption
+                                            devices. Your work table and storage space is lockable. Please ensure they are locked
+                                            when unattended. Duplicate keys are maintained with Security. One can take a duplicate
+                                            key after signing for it for one's own or team member's table or storage.
+                                        </p>
+                                    </div>
+
+                                    <div class="page-break"></div>
+
+                                                                                
+                                    <div class="logo">
+                                        <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                    </div>
+
+                                    <ol class="ol_upper">
+                                        <li><b>Destroying Papers & Material</b></li>
+                                        <p>
+                                            Any official communication, which is confidential in nature, shall be destroyed
+                                            through paper shredder after the purpose isserved.
+                                        </p>
+                                        <li>
+                                            <b>Use of Company Resources</b>
+                                            <ol type="I">
+                                                <li>
+                                                    You shall use The Company's resources only for official purposes as per the applicable Company policy.
+                                                </li>
+                                                <li>
+                                                    The Company shall have the right to access the files, folders and data stored in the official laptop
+                                                    provided to you by the Company and to keep track on individual users activity and logs stored in
+                                                    the official laptop. Further the Company may also monitor the emails and email traffic in your
+                                                    official mail id provided by the Company as measure to ensure compliance with Company's policies
+                                                    and network security. You also authorize the Company representative to access all the data and
+                                                    information stored under your mail id during and after employment with the Company and this
+                                                    access is provided under the applicable data privacy laws. You also expressly waive any other rights
+                                                    as may be available under the applicable Data Privacy laws against the Company for providing such
+                                                    access.
+                                                </li>
+                                                <li>
+                                                    You shall access only those web sites, which are relevant to your work at hand.
+                                                </li>
+                                                <li>
+                                                    You shall not use any company resource for hacking or other unethical / illegal activities.
+                                                </li>
+                                                <li>
+                                                    You shall not circulate or distribute offensive/pornographic material through e-mail or in any other
+                                                    manner.
+                                                </li>
+                                            </ol>
+                                        </li>
+                                    </ol><br>
+                                    <li>
+                                        <h3><b>Overseas Service Agreement</b></h3>
+                                        <p>
+                                            As The Company will be spending substantial amount of time and money for your
+                                            deputation /secondment abroad, you may be required to sign a deputation
+                                            agreement with The Company and may also be required to execute a Surety Bond
+                                            on such terms, as The Company may deem appropriate. (This agreement willconsist,
+                                            inter alia, of issues like (i) your commitment to complete the project (ii) yourreturning
+                                            to India after completion of the project and serving The Company for a stipulated
+                                            period).
+                                        </p>
+                                    </li><br>
+                                    <li>
+                                        <h3><b>Intellectual Property Rights</b></h3>
+                                        <p>
+                                            You agree to disclose any invention, development, process, plan, design, formula,
+                                            specification, program or other matter of work whatsoever (collectively "the
+                                            Inventions") created, developed or discovered by you, either alone or in concert, in
+                                            the course ofyour employment and the same shall be the absolute property of The
+                                            Company. Any Intellectual Property Rights and rights to inventions arising out of
+                                            your activities hereunder, or if ownership rights cannot be transferred under
+                                            applicable law, anyexploitation rights relating thereto, shall be transferred to The
+                                            Company in accordance with applicable law. You shall, as andwhen requested by
+                                            The Company (at Company's cost and expense), assist The Company in perfecting
+                                            the Intellectual Property Rights in any manner The Company deems fit. You shall
+                                            execute/sign the Intellectual Property Rights Assignment document as and when
+                                            required by Olatech Solutions Limited or the Client.
+                                        </p>
+                                    </li><br>
+                                    <li>
+                                        <h3><b>Jurisdiction</b></h3>
+                                        <p>
+                                            Even though The Company may depute you overseas for on-site work or to any
+                                            other location in India, the jurisdiction concerning any dispute arising out of your
+                                            employment will be in the courts in <b>Mumbai</b> only
+                                        </p>
+                                    </li><br>
+                                    <li>
+                                        <h3><b>Retirement</b></h3>
+                                        <p>
+                                            Your services with the Company will come to an end immediately upon your
+                                            attaining the age of retirement as per the then prevailing policy of the Company.
+                                            For the purpose of determining this, the age recorded with The Company shall be
+                                            considered asfinal and conclusive.
+                                        </p>
+                                        <p>
+                                            Termination of employment may also be initiated earlier by either party by serving
+                                            prior written notice on the other, as per the notice period stipulated in this letter. 
+                                        </p>
+                                    </li>
+                                    <div class="page-break"></div>
+
+                                                                                
+                                    <div class="logo">
+                                        <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                    </div>
+                                    <li>
+                                        <h3><b>General</b></h3>
+                                        <p>
+                                            The above terms and conditions including those in Annexure - A (Salary break up) are
+                                            based on Company policies, procedures and other rules currently applicable in India as
+                                            well as Overseas and are subject to amendments and adjustments from time to time. In
+                                            all services matters, including those not specifically covered here such as Traveling,
+                                            Leave, Working Hours, Retirement, Code of Conduct, etc. you will be governed by the
+                                            rules of The Company as shall be in force from time to time.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        In case you are requested to report to the office, you shall be present in the office
+                                        during normal working hours as specified in the policies or during hours expressly
+                                        designated for you in writing. Depending on organizational requirement or project
+                                        contingencies, you may be required to work on 24*7 project on shift basis if required and
+                                        your working hours / work days may be modified/ altered from time to time. The
+                                        Company does not encourage overtime work and accordingly does not have a policy for
+                                        payment of overtime. 
+                                    </li>
+                                    <li>
+                                        You shall provide details regarding the utilization of your time by entering the same
+                                        into Olatech Solutions Limited's electronic timesheet system on a daily basis. In case you
+                                        are attached to any project where the client may have requirement of recording specific
+                                        time-efforts, you shall comply with such requirement also, in addition to Olatech Solutions
+                                        Limited's timesheet system.
+                                    </li>
+                                    <li>
+                                        This offer is purely based on the information / documents provided by you and by
+                                        accepting the offer, you specifically authorize The Company or any external agency
+                                        through Olatech Solutions Limited to verify your educational, employment antecedents,
+                                        your conduct and any other background checks prior to your joining The Company or
+                                        thereafter. You shall extend your co-operation (if asked for) during such verification
+                                        without any protest or demur.
+                                    </li>
+                                   <br><br>
+                                   <div>
+                                    <p>
+                                        This is to certify that I have gone through and understood all the terms and conditions
+                                        mentioned in <b>Annexure – B</b> and I hereby accept and agree to abide by them. I am also
+                                        required to fill the <b>EMPLOYMENT VERIFICATION FORM,</b> complete in all respects and
+                                        bring it along with all the other documents / testimonials as required (Annexure D) at
+                                        the time of joining.
+                                    </p><br><br>
+                                    <h4>
+                                        <b>Employee Full Name :</b>
+                                    </h4><br>
+                                    <h4>
+                                        <b>Signature :</b>
+                                    </h4><br>
+                                    <h4>
+                                        <b>Address :</b>
+                                    </h4><br>
+                                    <h4>
+                                        <b>Date :</b>
+                                    </h4>
+                                    <h4><br> 
+                                        <b>Place :</b>
+                                    </h4>
+                                </ol>
+                            </div>
+                            <div class="page-break"></div>
+                            
+
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+                            <div>
+                                <h2 class="text-center"><b>Annexure - C</b></h2>
+                                    <h3 class="text-center"><b>Medical Declaration</b></h3><br>
+                                    <table border="1px">
+                                        <thead>
+                                            <tr class="color">
+                                                <th colspan="3"><b>MEDICAL DECLARATION FORM</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2">Applicant ID (To be filled by HR)</th>
+                                    
+                                                <th>Associate ID (To be filled by HR)</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="2">First Name:</th>
+                                                <th>Last Name:</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Gender:</th>
+                                                <th>Date Of Birth:</th>
+                                                <th>Blood Group:</th>
+                                            </tr>
+                                        </tbody>
+                                    </table><br>
+                                    <h3 class="text-center"><b>Candidate's Medical History:</b></h3>
+                                    <table>
+                                        <thead>
+                                            <tr class="color">
+                                                <th colspan="4"><b>Candidate's Medical Details</b></th>
+                                                <th colspan="1"><b>Yes</b></th>
+                                                <th colspan="1"><b>No</b></th>
+                                                <th colspan="2"><b>Please provide the details</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Do you have any defect or problem of vision?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Can you readily distinguish between the pigmentary colors?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Do you suffer from a degree of deafness which would prevent your hearing of normal conversation?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Do you have any physical deformity / handicap?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Do you have any congenital disorder / abnormality?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Have you ever been diagnosed to have any Psychiatric ailment including Depression, Anxiety Neurosis, Phobic
+                                                    Disorders, Schizophrenia, Manic Depressive Psychosis or any other Psychiatric illness?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Have you ever been diagnosed with an alcohol or drug abuse problem? If yes, are you on treatment for the same?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Have you ever been disqualified on medical grounds from any previous employment opportunity?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Have you ever been suffering from any Medical condition that may require you to take Medical Leaveover the
+                                                    next 12 months?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Have you had any form of critical illness or operation in the last two years?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" rowspan="1">Have you ever been diagnosed to have any Psychiatric ailment including Depression, Anxiety Neurosis, Phobic
+                                                    Disorders, Schizophrenia, Manic Depressive Psychosis or any other Psychiatric illness?</td>
+                                                <td colspan="1"></td>
+                                                <td colspan="1"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table><br><br>
+                                    <h5><b>Have you ever suffered/are you suffering from any of the following? (Please tick whichever applicable)</b></h5>
+                                    <table border="1px">
+                                        <tr>
+                                            <td colspan="2"></td>
+                                            <th colspan="2">Heart Attack</th>
+                                            <td colspan="2"></td>
+                                            <th colspan="2">Diabetes</th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"></td>
+                                            <th colspan="2">High Blood PressureStroke</th>
+                                            <td colspan="2"></td>
+                                            <th colspan="2">Stroke</th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"></td>
+                                            <th colspan="2"> Night Blindness</th>
+                                            <td colspan="2"></td>
+                                            <th colspan="2">Valve Disorders</th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"></td>
+                                            <th colspan="2"> Asthma</th>
+                                            <td colspan="2"></td>
+                                            <th colspan="2">Slipped disc</th>
+                                            <tr> 
+                                                <th colspan="8">Any other major disease/illness that you may be willing to disclose</th>
+                                            </tr>
+                                        </tr>
+                                    </table>
+                                    <div class="page-break"></div>
+                            
+
+                                    <div class="logo">
+                                        <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                    </div>
+                                    <br><br>
+                                    <div class="declaration-div">
+                                        <h5 colspan="1"><b>Candidate’s Declaration:</b></h5><br><br>
+                                        <h5><b>I declare that, to the best of my knowledge, the answers to the questions in this form are correct and that I am not</b></h5><br><br>
+                                        <h5><b>Signature:</b></h5><br><br>
+                                        <h5><b>Name:</b></h5><br><br>
+                                        <h5><b>Date:</b></h5><br><br>
+                                    </div>
+                            </div>
+                            <div class="page-break"></div>                            
+
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+                            <div>
+                                <h2 class="text-center"><b>Annexure - D</b></h2>
+                                <h3 class="text-center"><b>Checklist of the Documents</b></h3><br>
+                                
+                                <p>At the time of joining, you are requested to bring the</p>
+                                <ol class="ol_upper">
+                                    <li>
+                                        Acceptance copy of Olatech Solutions Limited's offer of appointment duly signed on all pages (including all
+                                        annexures)
+                                    </li>
+                                    <li>
+                                        Two passport-sized color photographs with white background.
+                                    </li>
+                                </ol><br>
+                                <p>
+                                    If you have not submitted the following documents on the Olatech Pre-Onboarding
+                                    Portal, or if documents are submitted butnot yet approved, you should carry the
+                                    following documents:
+                                </p><br>
+                                <ol>
+                                    <li>
+                                        <b>Relieving Letter:</b> Your relieving letter from your present organization Service Certificate from the last
+                                        employer as well as all previous employers.
+                                    </li><br>
+                                    <li>
+                                       <b>Valid Passport:</b> Please submit copy of the valid Passport (inclusive of all blank pages). In case you have
+                                        applied for it,please submit the proof of Passport Office submission ticket. Upon receipt of Passport from
+                                        Passport Office, please submit the documents to HR.
+                                    </li><br>
+                                    <li>
+                                        <b>PAN Card:</b> You MUST carry and provide your PAN Card copy. Please note that it is mandatory to provide
+                                        the PAN number for processing of your payroll and no payments on account of salaries can be made
+                                        without a PAN Number. If applied for please submit a copy of the acknowledgement as issued by the
+                                        Income Tax authorities.
+                                    </li><br>
+                                    <li>
+                                        <b>Aadhaar Card:</b> You MUST carry and provide your Aadhaar Card copy. Please note that it is mandatory to
+                                        provide your Aadhaar card number for processing the KYC in EPFO portal. If applied for, please submit a
+                                        copy of the acknowledgement as issued by the authorities. Please do ensure that your Name on the
+                                        Aadhaar Card Name and PAN name is same and Aadhaar Card has correct Date of Birth (DD-MM-YYYY
+                                        format) and Father's name.
+                                    </li><br>
+                                    <li>
+                                       <b>PF UAN Number:</b> You MUST provide your PF UAN Card copy or UAN Number (not applicable for
+                                        fresher's). You can find UAN number on your previous employer payslip or you can check with your
+                                        previous employer for your PF UAN Number.
+                                    </li><br>
+                                </ol><br>
+                                <p>
+                                    Your offer has been made based on the information furnished by you. However, if
+                                    there is a discrepancy in the copies of thedocuments/certificates given by you as a
+                                    proof in support of the above, The Company reserves the right to revoke the offer.
+                                </p>
+                            </div> 
+                            <div class="page-break"></div>
+
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+                            <div>
+                                <h2 class="text-center"><b>Annexure - E</b></h2>
+                                <h3 class="text-center"><b>Confidentiality Agreement</b></h3><br>
+                                <p>
+                                    I understand that during my employment with Olatech Solutions Limited, I will have
+                                    access to information for its customers, suppliers, vendors and licensors, any or all of
+                                    which are referred to in this agreement "Olatech Solutions Limited. I also understand
+                                    that this information, whether technical or non-technical is commercially valuable. It is
+                                    referred to in this agreement as "confidential information".
+                                </p>
+                                <p>
+                                    A few examples of confidential information are given below. However these examples
+                                    do not list all of the types of confidential information which I may develop or to which
+                                </p>
+                                <p>I may have access:</p>
+                                <ol>
+                                    <li>
+                                        Information of a business nature such as marketing, underwriting, associate customer and claimant
+                                        data, sales, and list ofcustomers, including future developments and planning concerning them.
+                                    </li>
+                                    <li>
+                                        Computers /software programs and associated documentation and material which are propriety to
+                                        Olatech Solutions Limited orwhich Olatech Solutions Limited. is under an obligation to prevent this disclosure.
+                                    </li>
+                                    <li>
+                                        Information from Olatech Solutions Limited's vendor and supplier which is confidential, propriety or copyrighted.
+                                    </li>
+                                    <li>
+                                        I hereby agree that :
+                                        <ul>
+                                            <li>
+                                                The confidential information shall remain the sole and exclusive propriety of Olatech Solutions Limited and
+                                                I shall regard it as confidential and secret information.
+                                            </li>
+                                            <li>
+                                                The confidential information is the property considered to be the trade secrets of Olatech Solutions Limited
+                                                because it involves processes and compilation of information which are secret, confidential, and not
+                                                generally known to the public and which are the products of expenditure of time, effort, money, and /or
+                                                creative skills of Olatech Solutions Limited.
+                                            </li>
+                                            <li>
+                                                The use of confidential information is furnished to me during my employment on a confidential and secret
+                                                basis for a sole andexclusive use and pursuing my employment duties at Olatech Solutions Limited.
+                                            </li>
+                                            <li>
+                                                I will not, during and after my employment at Olatech Solutions Limited., publish, disclosed, or otherwise
+                                                divulge the confidentialinformation to any person not specifically authorized by Olatech Solutions Limited.
+                                                to receive such information.
+                                            </li>
+                                            <li>
+                                                I will not copy and confidential information for any purpose except with the express consent of the Olatech
+                                                Solutions Limited. Officials or the expressed written authorization of the third party owner.
+                                            </li>
+                                            <li>
+                                                Upon termination of my employment with Olatech Solutions Limited., or at any other time at Olatech
+                                                Solutions Limited. request, I agree to return promptly to Olatech Solutions Limited., all confidential
+                                                information, including but not limited to all manuals,letters, notes, notebooks, reports, formulae,
+                                                computer programs and associated documentation and material, memoranda, customer list and all other
+                                                materials and all copies of them relating in any way to Olatech Solutions Limited which in any way were
+                                                obtained by me during my employment at Olatech Solutions Limited .which are in my possession or under
+                                                my control. I further agree that I will not make or retain any copies of the above mentioned information
+                                                and will so represent to Olatech Solutions Limited. upon termination of my employment.
+                                            </li>
+                                            <li>
+                                                This confidentiality agreement will continue to be in effect after the termination of my employment
+                                                with Olatech Solutions Limited.
+                                            </li>
+                                            <li>
+                                                If any provision of this agreement is declared invalid or unenforceable with respect to a particular
+                                                occurrence or circumstance or otherwise, that will not affect the validity, enforceability, or applicability of
+                                                any other provision of this agreement.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                        
+                            <div class="page-break"></div>
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+
+                                <div>
+                                    <h5><b>Name :</b></h5><br>
+                                    <h5><b>Signature :</b></h5><br>
+                                    <h5><b>Date :</b></h5><br>
+                                </div>
+                            </div> 
+                            <div class="page-break"></div>
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>                            
+                            <div>
+                                <h2 class="text-center"><b>Annexure - F</b></h2>
+                                <h3 class="text-center"><b>Intellectual Property Assignment</b></h3><br><br>
+                                
+                                <h5> <b>Associate Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                   Associate ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              
+                                   Date: </b></h5><br>
+                                <p>
+                                    In consideration of my employment with Olatech Solutions Limited and in view of the
+                                    confidential nature of employment by reason of which I will obtain and have obtained
+                                    special knowledge of Olatech Solutions Limited and business, its necessities and plans and
+                                    the information of its customer, I hereby agree as follows:
+                                </p>
+                                <ol class="ol_upper">
+                                    <li>
+                                        <p><b>Intellectual Property Assignment</b></p>
+                                        <p>
+                                            I hereby assign, to Olatech Solutions Limited or its successor, designees or assigns, any
+                                            and all rights in any design, invention, discovery, or other intellectual property
+                                            (including without limitation, right to apply for and obtain a patent) which I may create,
+                                            develop or assist in creating of developing during my employment which design,
+                                            inventions, discovery and other intellectual property relate to services provided/ to be
+                                            provided or products or systems manufactured or developed or licensed or sold by
+                                            Olatech Solutions Limited whenever made by me and for any work made and/or created
+                                            or cause to made and/or created in the course of my employment whether onthe
+                                            customer project or otherwise.
+                                        </p>
+                                        <p>
+                                            Olatech Solutions Limited shall be the first owner of the copyrights therein and for work
+                                            made and/or created or cause to made and/or created in the course of my
+                                            employment. If by virtue of any law or any judgment, Olatech Solutions Limited is not
+                                            the first owner, then I hereby assign, exclusively and irrevocably, the same, wholly and
+                                            generally, forever throughout the world, without any obligation of payment of royalty
+                                            or any other sum of money or benefit(s), the whole of the copyright(s) in all such work(s)
+                                            and further waive all my moral rights wholly in favour of Olatech Solutions Limited I also
+                                            agree to sign on demand, whether during the employment or any time thereafter, any
+                                            papers and do any acts which may be deemed necessary or desirable by Olatech
+                                            Solutions Limited to secure to Olatech Solutions Limited., its successors, designees, or
+                                            assign, any right relating to such design, invention, discovery, copyright or intellectual
+                                            property and improvement including patents in India or any other foreign country.
+                                        </p>
+                                        <li>
+                                            <p><b>Restrictions after Termination</b></p>
+                                            <p>
+                                                I further agree upon termination of my employment to surrender to Olatech Solutions
+                                                Limited all software programs, data (whether inhard copy form or in electronic form),
+                                                notebooks, designs, drawings, blueprints, writings, manuals, price books, any business
+                                                ormarket information, business and technical brochures, service models and
+                                                techniques and other documents and materials (including all copies) then in my
+                                                possession or control, which relate in any way to the business, research, development,
+                                                sales, sales promotions, marketing or customer's information or other activities of
+                                                Olatech Solutions Limited The obligations stated under this Agreement shall survive the
+                                                termination or discontinuation of my employment with Olatech Solutions Limited.
+                                            </p>
+                                        </li>
+                                    </li>
+                                </ol>
+                                <h5>
+                                    <b class="left-shift">_____________________ <br>WITNESSED</b>
+                                    <b class="right-shift">_____________________<br>ACCEPT</b>
+                                </h5> 
+                            </div>
+                            <div class="page-break"></div>
+                            
+                            <div class="logo">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                            </div>
+                            <div>
+                                <h2 class="text-center"><b>Annexure - G</b></h2>
+                                <h3 class="text-center">
+                                    <b>Agreement - General Covenant Against Disclosure and Covenant Not to Compete / Non- Solicitation
+                                    </b>
+                                </h3><br>
+                                <p>
+                                    In consideration of my employment "Olatech Solutions Limited", and in
+                                    consideration of the wages or salary to be paidto me and regardless of the duration of my employment, I enter into the following agreements:
+                                </p>
+                                <ol>
+                                    <li>
+                                        I agree to perform competently, diligently, reliably, and to the best of my ability all duties
+                                        required of me from time to time by Olatech Solutions Limited I shall not directly or indirectly, either as an associate, employer,
+                                        consultant, agent, principal, partner, stockholder, corporate officer, director
+                                        or in any other individual or representative capacity, engage or participate in any business that is in
+                                        competition in any manner whatsoever with the businessof Olatech Solutions Limited during the term
+                                        of my employment with Olatech Solutions Limited either within or outside of business hours.
+                                    </li><br>
+                                    <li>
+                                        I acknowledge and agree that I am bound by all of the terms and conditions of my Service Agreement
+                                        in addition to the terms and conditions of this agreement.
+                                    </li><br>
+                                    <li>
+                                        <b>Actions Required on Termination:</b> Upon termination of my employment at Olatech Solutions
+                                        Limited whether voluntary or involuntary (or at any other time upon the request of Olatech Solutions
+                                        Limited.), I shall return to Olatech Solutions Limited all of its property of which I have had custody,
+                                        including all handbooks, manuals, notebooks, supplies, credit cards, keys, disks, tapes, records, statistics,
+                                        data and Confidential Information (defined herein) for which I have acquired by virtue of my employment,
+                                        regardless of form or media.
+                                    </li><br>
+                                    <li>
+                                        <b>Covenant Against Disclosure:</b> I understand that it may be desirable and necessary for Olatech
+                                        Solutions Limited or any ofits suppliers, licensors, licensees or customers to disclose to me information
+                                        which may include, by way of illustration and not by way of limitation, technical information, designs,
+                                        drawings, processes, systems, procedures, formulae, test data, improvements, price lists, financial data,
+                                        code books, invoices, financial statements and other financial information, computer programs, disks,
+                                        printouts, sketches, customer and prospect contacts, customer and prospect lists, names, addresses or
+                                        any other compilation of information written or unwritten (both individually and collectively referred to
+                                        herein as "Confidential Information") during the course of my employment.
+                                    </li><br>
+                                    <p>
+                                        Because I will have access to and become familiar with such Confidential
+                                        Information, I hereby agree to accept and retain such Confidential Information
+                                        in confidence and agree, at all times during or after the termination of my
+                                        employment, not to, directly or indirectly, disclose, reveal, use, copyright or
+                                        patent such Confidential Information, without the prior written consent of an
+                                        authorized officer Olatech Solutions Limited I also agree to keepthe contractual
+                                        relationships of Olatech Solutions Limited with its suppliers, licensors,
+                                        licensees,
+                                        customers, contractors, and subcontractors
+                                        confidential, including the names, addresses, or special requirements of
+                                        Olatech Solutions Limited's customers. This Section 4 is intended to apply
+                                        to all materials, which I may compile, as well as to all materials furnished to me
+                                        by anyone else in connection with my employment.
+                                    </p>
+                                    <ol class="ol_upper">
+                                        <li>
+                                            Because it may not be clear to Associate which information is Confidential Information, in order to
+                                            minimize the possibility of inadvertent disclosure, Associate agrees to consult with Olatech Solutions
+                                            Limited before making any disclosure of information covered by this Agreement.
+                                        </li>
+                                        <li>
+                                            Associate may disclose information if such disclosure is directly pursuant to a valid and existing order
+                                            of a court, or a governmental body or agency, within India; provided, however, that prior to
+                                            such disclosure, the Associate (i) notifies Olatech Solutions Limited in writing of the prospective
+                                            order, or proceeding giving riseto such order, and (ii) Olatech Solutions Limited has had the
+                                            opportunity to prevent or limit such disclosure.
+                                        </li>
+
+                                        <div class="page-break"></div>
+
+                                        <div class="logo">
+                                            <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                        </div>
+                                        
+                                        <li>
+                                            In the event of a breach or threatened breach of this Section 4 by Associate, Olatech Solutions
+                                            Limited shallbe entitled, in addition to all other remedies otherwise available to Olatech Solutions
+                                            Limited to and Associate hereby consents to the issuance thereof forthwithin any court of
+                                            competent jurisdiction without proof of specific damages. Associate waives any requirement
+                                            for a bond in connection with any temporary or pendente lite injunctive relief.
+                                        </li>
+                                        <li>
+                                            In the event that Olatech Solutions Limited shall enforce any part of this Agreement through legal
+                                            proceedings and obtains any judgment or order in such proceedings, Associate agrees to pay to
+                                            Olatech Solutions Limited any costs and attorneys' fees reasonably incurred by Olatech Solutions
+                                            Limited in connection with obtaining such judgmentor order.
+                                        </li>
+                                    </ol>
+                                    <p>
+                                        If any court should hold any part of the covenants set forth herein to be
+                                        unreasonable, or otherwise unenforceable,the parties expressly agree that the
+                                        covenants set forth herein shall be enforced to the extent that would otherwise
+                                        be deemed reasonable or enforceable. In the event of any breachby Associate,
+                                        the Non-Compete Periodshall be extended on a per diem basis for the period that
+                                        Associate is in breach.
+                                    </p>
+                                    <li>
+                                        <b>Ownership of Work Product:</b> Olatech Solutions Limited shall be the sole owner
+                                        of all of my work product. For this purpose, "work product" means all
+                                        inventions, improvements, discoveries, documentation, programming and
+                                        technology (including all associated intellectual property rights) that I may
+                                        create (alone or with others, at work or elsewhere, during or after the normal
+                                        workday) relating to the work I do, the business of Olatech Solutions Limited
+                                        or any research or development conducted by Olatech Solutions Limited I
+                                        agree to assign, disclose and deliver to Olatech Solutions Limited as Olatech
+                                        Solutions Limited's property, all right and evidence I may have or acquire with
+                                        respect to any and all work product, and I agree to take such further actions
+                                        and sign such further instruments as Olatech Solutions Limited may request
+                                        from time to time to protect and defend its ownership of any and all work
+                                        product. I understand that disclosure of my suggestions and ideas is
+                                        encouraged.
+                                    </li><br>
+                                    <li>
+                                       <b>Partial Restriction on Post-Termination Competition:</b> Background. Olatech
+                                        Solutions Limited expects to invest considerable time, effort and capital in
+                                        enhancing the value and desirability of my skills. Both this investment and
+                                        my compensation reflect Olatech Solutions Limited's expectation of receiving
+                                        a considerable return from the exclusive use of my services and know-how in
+                                        the future, free from any danger that Olatech Solutions Limited's customers
+                                        or competitors may attempt to cause me to leave Olatech Solutions Limited
+                                        and wrongfully gain the benefit of Olatech Solutions Limited's investment.
+                                        The partial restraint set forth in this Section
+                                        6 does not, and cannot, provide complete protection for Olatech Solutions
+                                        Limited's investment, development efforts, product, strategy, proprietary
+                                        and Confidential Information, but Olatech Solutions Limited believes that in
+                                        combination with the other provisions of this Agreement, it is the most fair
+                                        and reasonable measure to protect Olatech Solutions Limited's interest,
+                                        giving due regard to both my interests and the interests of Olatech Solutions
+                                        Limited .
+                                    </li><br>
+                                    <li>
+                                        <b>Covenant Not To Compete.</b> I hereby covenant and agree as a part of and
+                                        ancillary to this Agreement that for the 12 months period following the
+                                        termination of my employment with Olatech Solutions Limited (irrespective
+                                        of the reason for or such termination),
+                                        <ol  class="ol_upper">
+                                            <li>
+                                                I will not solicit, or attempt to solicit, or cause any third party to solicit, directly or indirectly, any
+                                                customer of Olatech Solutions Limited for the purpose of selling or licensing products or services
+                                                that are then competitive with the products and services that are then available to that customer from Olatech
+                                                Solutions Limited provided, however, that this restriction shall apply
+                                                only to customers of Olatech Solutions Limited with whom I actually have material contact
+                                                (meaning direct interaction, such as through sales calls, presentations or other business dealings)
+                                                in the course of performing my employment duties for Olatech Solutions Limited within the two
+                                                year period preceding the date my employment with Olatech Solutions Limited ends. It is
+                                                understood that this restriction is necessary to avoid possible compromise of Confidential
+                                                Information and business interest.
+                                            </li>
+                                            <li>
+                                                I will not (1) seek or obtain employment of any kind by any means, directly or indirectly, as either
+                                                associate, agentor consultant, with any customer of Olatech Solutions Limited's for which I am
+                                                providing services on behalf of Olatech Solutions Limited that are competitive with the products
+                                                and services available to the client from Olatech Solutions Limited provided however, that this
+                                                restriction shall apply only to employment to perform the same or substantially similar services
+                                                that I am performing for the client as a Olatech Solutions Limited associate; or 
+                                                
+                                                
+
+                                                <div class="page-break"></div>
+
+                                            <div class="logo">
+                                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                            </div>
+
+                                                
+                                                (2) induceor
+                                                solicit any associate of Olatech Solutions Limited to seek or obtain such employment with a
+                                                customer of Olatech Solutions Limited This restriction applies to my acceptance of any
+                                                employment by a customer through general advertising or thirdparty recruitment;
+                                            </li><br>
+                                        </ol>
+                                        <p>
+                                            I accept and agree that the above covenants (a) and (b) are reasonable restrictions
+                                            imposed with an objective to protect Olatech Solutions Limited's legitimate
+                                            business interests and proprietary and confidential information. Given the
+                                            compensation and benefits provided to me, I agree that the restriction as to time
+                                            and scope contained herein are reasonable and necessary to protect Olatech
+                                            Solutions Limited's business interests and proprietary information. I have
+                                            sufficient skills to find alternative, commensurate employment that would not
+                                            violate the terms of this undertaking. I acknowledge that adherence to this
+                                            undertaking shall not deprive me of the ability to earn a living or support my
+                                            dependents.
+                                        </p>
+                                    </li><br>
+                                    <li>
+                                        <b>Compliance Not Contingent Upon Additional Consideration:</b>
+                                        I understand and acknowledge that the wages, compensation,, benefits training and experience that
+                                        Olatech Solutions Limited. provides to me shall be full and sufficient consideration
+                                        for the promises contained in this Agreement. I have not been promised, and shall
+                                        not claim, any additional or special payment or compliance with the covenants and
+                                        agreements here in.
+                                    </li><br>
+                                    <li>
+                                        <b>Damages and Remedies:</b> I acknowledge and agree that if violate this Agreement,
+                                        Olatech Solutions Limited may take legal action against me as follows: (1) Olatech
+                                        Solutions Limited. may take legal action in the court specified below in Paragraph
+                                        14 for the liquidated damages specified in Paragraph 6 above and (2) a violationof
+                                        this Agreement is likely to cause severe and irreparable Cause injury to the
+                                        business, good will, client relations and proprietary information of Olatech
+                                        Solutions Limited., an injury that is not adequately compensable by money
+                                        damages alone. Accordingly, in the event of a breach (or threatened or attempted
+                                        breach) of this Agreement, Olatech Solutions Limited. shall, in addition to any other
+                                        rights and remedies, be entitled to immediate, appropriate injunctive relief, or a
+                                        decree of specific performance of this Agreement, without the necessity of
+                                        showing any irreparable injury or special damages, in any court of competent
+                                        jurisdiction.
+                                    </li><br>
+                                    <li>
+                                        <b>Severability:</b> Each paragraph and provision of this Agreement is severable from
+                                        the contract and if one provision is declared invalid, the remaining provisions
+                                        shall nevertheless remain in full force and effect. Further, the invalid provision or
+                                        part shall remain enforceable to the extent permitted by law.
+                                    </li><br>
+                                    <li>
+                                        <b>Entire Agreement:</b> This Agreement reflects the full and complete agreement
+                                        between myself and Olatech Solutions Limited. On the subjects covered hereinand
+                                        supersedes and replaces all prior negotiations or agreements, whether written or
+                                        oral. This Agreement shall only be modified, altered or replaced by a subsequent
+                                        writing, signed by myself and an authorized officer of Olatech SolutionsLimited.
+                                    </li><br>
+                                    <li>
+                                        <b>Binding Effect:</b> This Agreement shall inure to the benefit of, and be binding upon,
+                                        my heirs, executors, administrators and personal representatives as well as the
+                                        subsidiaries and affiliates of Olatech Solutions Limited. (Together with their
+                                        successors and assigns).
+                                    </li><br>
+                                    <li>
+                                        <b>Choice of Law:</b> This Agreement will be governed and controlled in all respects by the laws
+                                        of India.
+                                    </li><br>
+                                    <li>
+                                        <b>Choice of Forum:</b> The parties submit to the jurisdiction and venue of India with
+                                        respect to any action arising, directly or indirectly, out of this Agreement or the
+                                        performance or breach of this Agreement. The parties stipulate that the venues
+                                        referenced in this Agreement are convenient
+                                    </li>
+                                </ol>
+                            </div> 
+
+                            <div class="page-break"></div>
+
+                                <div class="logo">
+                                    <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" class="logo-image">
+                                </div> 
+                            <div>
+                                <p>
+                                    In the event of any violation of the terms of this clause, I agree that I shall be liable to Olatech
+                                    Solutions Limited. For liquidated damages in the amount of the gross salary earned by me
+                                    during the preceding one year from the date of such breach. I acknowledge and agree that
+                                    said amount constitutes liquidated damages and not a penalty, and that the amount is a
+                                    reasonable and fair estimate of the actual damages that Olatech Solutions Limited. Would
+                                    incur upon such breach.
+                                </p>
+
+                                <p>
+                                    Following the expiration of the one year period described herein, I shall continue to
+                                    be obligated under the Covenant Against Disclosure in Section 4 so long as such Confidential
+                                    Information remains proprietary or protectable as confidential or trade secret information.
+                                </p><br><br>
+                                <h5>
+                                    <b>Executed this _______ day of ____________</b>
+                                </h5><br><br>
+                                <h5>
+                                    <b>For and on Behalf of </b><br>
+                                    <b>Olatech Solutions Limited</b><br><br><br>
+                                    <b>Head - Resource Management Group</b>    
+                                </h5><br><br><br>
+                                <h5>
+                                    <b>Signature</b><br>
+                                <b>________________</b><br>
+                                    <b>( Candidate )</b>
+                                </h5>
+                            </div>                      
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer id="number-container" class="container">
+    Olatech Solutions Limited
+    Address: 310, Rupa Solitaire, Millennium Business Park, Mahape, Navi Mumbai - 400710
+    Mobile: +91-22-27780131 Website: www.olatechs.com Email Id: hr@olatechs.com
+    CIN: U72100MH2014PLC251672
+</footer>
+
+{% endblock main_content %}
+
+{% block footer %}
+{% endblock footer %}

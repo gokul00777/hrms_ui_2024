@@ -1,0 +1,205 @@
+{% extends 'hr_management/manager_template/base_template.html' %}
+{% load static %}
+
+{% block main_content %}
+
+{% block custom_css %}
+<style>
+    /* Your custom CSS styles here */
+    /* Styles for the modal popup */
+    #customPopup {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background-color: #FEFEFE;
+        position: fixed;
+        top: 50%;           /* Center vertically */
+        left: 50%;          /* Center horizontally */
+        transform: translate(-50%, -50%);  /* Adjust for centering */
+        margin: auto;
+        padding: 10px;
+        border: 1px solid #888;
+        width: 500px;
+        border-radius: 8px;
+        z-index: 1;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    textarea {
+        width: 100%;
+        height: 100px; /* Adjust the height of the textarea as per your needs */
+        margin-bottom: 10px;
+        resize: vertical;
+    }
+    #submitbutton {
+        width: 150px;
+        height: 40px;
+        margin-bottom: 10px;
+        resize: vertical;
+        align-items:center;
+        margin: 0 auto 10px; /* This centers the button horizontally and adds a bottom margin */
+        display: block;
+    }
+</style>
+{% endblock custom_css %}
+<div class="container-fluid" style="width:1000px;">
+<div class="form-container">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title text-center">Reimbursement Record Details</h3>
+        </div>
+        <div class="padding_bill" style="padding-left:20px;padding-right:20px;padding-bottom:20px;padding-top:20px;">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for enter in records %}
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="bill_no">Claim Number:</label>
+                    <input type="text" name="bill_no" id="bill_no" class="form-control" value="{{ enter.bill_no }}" readonly>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="total-amount">Total Amount:</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" value="{{ enter.total_amount }}" readonly>
+                        <div class="input-group-append">
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div><hr></div>
+            
+            {% endfor %}
+            <div id="records-container">
+                {% for entry in record %}
+                {% if entry.sr_no %}
+                <div class="record">
+                    <div class="form-row">
+                        <div class="form-group col-md-1">
+                            <label for="sr-no{{ entry.id }}">Invoice No :</label>
+                            {% with serial_number=forloop.counter %}
+                            <input type="text" name="sr_no{{ entry.id }}" class="form-control"
+                                value="{{ entry.sr_no }}" readonly>
+                            {% endwith %}
+                        </div>
+                      <div class="form-group col-md-2">
+                        <label for="date{{ entry.id }}">Date:</label>
+                        {% with formatted_date=entry.date|date:"Y-m-d" %}
+                        <input type="date" name="date{{ entry.id }}" class="form-control" value="{{ formatted_date }}" readonly>
+                        {% endwith %}
+                    </div>
+                        <div class="form-group col-md-2">
+                            <label for="amount{{ entry.id }}">Amount:</label>
+                            <input type="number" name="amount{{ entry.id }}" class="form-control"
+                                value="{{ entry.amount }}" readonly>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="reason{{ entry.id }}">Reason:</label>
+                            <input type="text" name="reason{{ entry.id }}" class="form-control"
+                                value="{{ entry.reason }}" readonly>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="description{{ entry.id }}">Description:</label>
+                            <textarea name="description{{ entry.id }}" class="form-control"  style="height: 38px;" readonly>{{ entry.description }}</textarea>
+                        </div>
+                        
+                        <div class="form-group col-md-2">
+                            <label for="attachment{{ entry.id }}">Attachment:</label><br>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        {% if entry.attachment %}
+                                        <a href="{{ entry.attachment.url }}" target="_blank">View Attachment</a>
+                                        {% else %}
+                                        No attachment
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div><hr></div>
+                {% endif %}
+                {% endfor %}
+                
+            </div>
+            
+           
+        </form>
+        <div id="records-container">
+
+            {% for reimbursement in records %}
+            <!-- Add the buttons here based on the reimbursement status -->
+            {% if reimbursement.reimbursement_status == 0 %}
+            <a href="{% url 'employee_approve_reimbursement' id=reimbursement.id %}" class="btn btn-success">Approve</a>
+            <button type="button" onclick="showPopup('{{ reimbursement.id }}')" class="btn btn-danger">Send Back</button>
+            <div id="customPopup_{{ reimbursement.id }}" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closePopup('{{ reimbursement.id }}')">&times;</span>
+                    <textarea id="customTextField_{{ reimbursement.id }}" name="query" placeholder="Enter Send Back Reason..."></textarea>
+                    <button type="button" id="submitbutton_{{ reimbursement.id }}" onclick="submitCustomText('{{ reimbursement.id }}')" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+            <form id="recheckForm_{{ reimbursement.id }}" method="POST" action="{% url 'employee_disapprove_reimbursement' id=reimbursement.id %}" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="query" id="recheckInput_{{ reimbursement.id }}">
+            </form>
+            {% elif reimbursement.reimbursement_status == 1 %}
+            <button class="btn btn-warning" disabled="disabled">Approved</button>
+            {% elif reimbursement.reimbursement_status == 3 %}
+            <button class="btn btn-success" disabled="disabled">Payment Done</button>
+            {% else %}
+            <button class="btn btn-danger" disabled="disabled">Re-Checked</button>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+
+<script>
+    function showPopup(id) {
+        var customPopup = document.getElementById('customPopup_' + id);
+        customPopup.style.display = 'block';
+    }
+    
+    function closePopup(id) {
+        var customPopup = document.getElementById('customPopup_' + id);
+        customPopup.style.display = 'none';
+    }
+    
+    function submitCustomText(id) {
+        var customTextField = document.getElementById('customTextField_' + id);
+        var inputElement = document.getElementById('recheckInput_' + id);
+        inputElement.value = customTextField.value;
+        var formElement = document.getElementById('recheckForm_' + id);
+        formElement.submit();
+        closePopup(id);
+    }
+</script>
+
+{% endblock main_content %}

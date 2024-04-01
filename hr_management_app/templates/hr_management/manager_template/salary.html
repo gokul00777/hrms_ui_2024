@@ -1,0 +1,388 @@
+{% extends 'hr_management/manager_template/base_template.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+
+{% block main_content %}
+
+{% block custom_css %}
+
+<style>
+    #border {
+        border: 2px solid rgba(0, 0, 0, 0.836);
+    }
+
+
+
+    .table-border {
+        border: 1px solid black;
+        width: 100%;
+        justify-content: flex-end;
+        flex-direction: column;
+        align-items: flex-end;
+
+    }
+
+    .table-border th,
+    .table-border td {
+        text-align: left;
+        padding: 5px;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    .heade-color {
+        background-color: grey;
+    }
+
+    .logo-container {
+        text-align: center;
+    }
+
+    .logo-image {
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    .logo {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    @page {
+        /* Set the size and margins for the pages */
+        size: A3;
+        margin-left: 1cm;
+        margin-right: 1cm;
+    }
+
+    @media print {
+
+        html,
+        body {
+            zoom: 100%;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+    }
+
+    #number-container {
+        font-family: "Calibri", sans-serif;
+        font-size: 16px;
+    }
+
+    .container {
+        border: none;
+        /* Remove the border */
+        background-color: white;
+    }
+
+
+    #myTable {
+        border: 1px solid black;
+        /* Add a solid black border to the table */
+        border-collapse: collapse;
+        /* Collapse the table borders into a single border */
+        /* justify-content: flex-end; */
+        /* flex-direction: column; */
+        align-items: flex-end;
+    }
+
+    #myTable th,
+    #myTable td {
+        border: 1px solid black;
+        /* Add a solid black border to the table cells */
+        padding: 6px;
+        /* Add padding to the cells for better spacing */
+
+
+    }
+
+    .heade-color {
+        background-color: grey !important;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid rgba(0, 0, 0, 0.8);
+        margin: 20px 0;
+    }
+
+    @media print {
+        #download-btn {
+            display: none;
+        }
+        /* Hide the download button when generating PDF */
+        #download-btn {
+            display: none;
+        }
+
+        /* Override specific styles causing color change */
+        .heade-color {
+            background-color: grey !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #myTable th,
+        #myTable td {
+            border: 1px solid black !important;
+            padding: 6px !important;
+        }
+
+        hr {
+            background-color: black;
+        }
+
+        #month-form {
+
+            display: none;
+
+        }
+    }
+</style>
+{% endblock custom_css %}
+<br>
+{% if unique_months %}
+<div>
+    <form id="month-form" action="{% url 'employee_salary_view' %}" method="POST">
+        {% csrf_token %}
+        <div class="container-fluid" style="width:900px;  padding-bottom: 20px; ">
+            <div class="align-center">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card card-primary">
+                            <div class="card-header ">
+                                <h3 class="card-title">Salary Slip</h3>
+                            </div>
+                            <div class="row justify-content-center" style="padding-top: 20px;padding-left: 100px;">
+                                <div class="col-md-4 years">
+                                    <label for="year">Select Year:</label>
+                                    <select id="year" name="year" class="form-control form-group col-md-8 text-center" required>
+                                        <option value="">-- Select Year --</option>
+                                        {% for year in unique_years %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 months">
+                                    <label for="month">Select Month:</label>
+                                    <select id="month" name="month" class="form-control form-group col-md-8 text-center"  required>
+                                        <option value="">-- Select Month --</option>
+                                        {% for month in unique_months %}
+                                        <option value="{{ month }}">{{ month }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="container-fluid"
+                                    style="width:900px; padding-bottom: 60px; padding-top: 20px; ">
+                                    <div class="form-row justify-content-center">
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-success">View Salary Slip</button>
+                                        </div>
+                                    </div>
+                                </div>
+    </form>
+</div>
+{% endif %}
+{% if salary_slip %}
+<div class="row justify-content-center" style="padding-left: 100px;">
+    <div class="col-md-4">
+        <button id="download-btn" class="btn btn-danger" download="salary_slip.pdf">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="25" fill="currentColor"
+                class="bi bi-cloud-arrow-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M7.646 10.854a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 9.293V5.5a.5.5 0 0 0-1 0v3.793L6.354 8.146a.5.5 0 1 0-.708.708l2 2z" />
+                <path
+                    d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+            </svg> Download Salary Slip
+        </button>
+    </div>
+</div>
+<div class="container" id="number-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="text-center" id="border">
+
+                        <head>
+                            <div class="logo logo-container">
+                                <img src="{% static 'images/olatech_logo.jpg' %}" alt="Olatech Logo" height="160"
+                                    width="850" class="logo-image">
+                            </div>
+                        </head>
+                        <hr style="color: rgba(0, 0, 0, 0.8);">
+                        <div>
+                            <b>
+                                OLATECH SOLUTIONS LIMITED <br>
+                                {{ salary_slip.address }} 
+                            </b>
+                            <br>
+                                <p>CIN: U72100MH2014PLC251672</p>
+                        </div>
+                        <div>
+                            <table class="table-border">
+                                <thead>
+                                    <tr id='myTable' style="background-color: grey;">
+                                        <th class="text-center heade-color" colspan="5">Pay Slip for the Month of
+                                            {{salary_slip.month}} {{ salary_slip.year}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Employee Name :</th>
+                                        <td>{{ request.user.first_name }} {{ request.user.last_name }}</td>
+                                        <th>Employee No :</th>
+                                        <td>{{ employee.emp_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Department :</th>
+                                        <td>{{ employee.department }}</td>
+                                        <th>Designation :</th>
+                                        <td>{{ employee.designation }}</td>
+                                    </tr>
+                                    {% for onb_data in onboarding_data %}
+                                    <tr>
+                                        <th>DOJ :</th>
+                                        <td>{{ onb_data.date_of_joining | date:"d-F-Y" }}</td>
+                                        <th>DOB :</th>
+                                        <td>{{ onb_data.dob| date:"d-F-Y" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>PAN :</th>
+                                        <td>{{ onb_data.pancard_no }}</td>
+                                        <th>Days Payable :</th>
+                                        <td>{{ salary_slip.days_paid }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>UAN :</th>
+                                        <td>{{ onb_data.pf_uan_no }}</td>
+                                        {% endfor %}
+                                        <th>Days Paid :</th>
+                                        <td>{{ salary_slip.days_paid }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table id="myTable">
+                                <thead>
+                                    <tr class="heade-color earnings-header">
+                                        <th class="text-center">Earnings</th>
+                                        <th class="text-center">{{ month_short }}-{{year_short}}</th>
+                                        <th class="text-center">YTD</th>
+                                        <th class="text-center">Deductions</th>
+                                        <th class="text-center">{{ month_short }}-{{year_short}}</th>
+                                        <th class="text-center">YTD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Basic Salary</th>
+                                        <td>{{ salary_slip.basic_salary | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_basic_salary | floatformat:2 }}</td>
+                                        <th class="text-center">Provident Fund</th>
+                                        <td>{{ salary_slip.provident_fund | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_provident_fund | floatformat:2 }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>HRA</th>
+                                        <td>{{ salary_slip.hra | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_hra | floatformat:2 }}</td>
+                                        <th>ESIC</th>
+                                        <td>{{ salary_slip.esic | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_esic | floatformat:2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Conveyance Allowance</th>
+                                        <td>{{ salary_slip.conveyance_allowance | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_conveyance_allowance | floatformat:2 }}</td>
+                                        <th>Professional Tax</th>
+                                        <td>{{ salary_slip.professional_tax | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_professional_tax | floatformat:2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Flexible Component</th>
+                                        <td>{{ salary_slip.flexible_component | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_flexible_component | floatformat:2 }}</td>
+                                        <th>Income Tax</th>
+                                        <td>{{ salary_slip.income_tax | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_income_tax | floatformat:2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Variable Component<br>(Paid Monthly)</th>
+                                        <td>{{ salary_slip.variable_component | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_variable_component | floatformat:2 }}</td>
+                                        <th>Other Deductions</th>
+                                        <td>{{ salary_slip.other_deductions | floatformat:2 }}</td>
+                                        <td>{{ salary_slip.ytd_other_deductions | floatformat:2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gross Salary</th>
+                                        <td><b>{{ salary_slip.gross_salary | floatformat:2 }}</b></td>
+                                        <td><b>{{ salary_slip.ytd_gross_salary | floatformat:2 }}</b></td>
+                                        <th>Total Deductions</th>
+                                        <td><b>{{ salary_slip.total_deductions | floatformat:2 }}</b></td>
+                                        <td><b>{{ salary_slip.ytd_total_deductions | floatformat:2 }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3"></th>
+                                        <th>Net Salary</th>
+                                        <td><b>{{ salary_slip.net_salary | floatformat:2 }}</b></td>
+                                        <td><b>{{ salary_slip.ytd_net_salary | floatformat:2 }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="7">In words :- {{ capitalized_word }} Only/-</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="7">
+                                            Salary has been credited to your Bank Account No.{{ account_number }} in
+                                            {{ bank_name }} <br>
+                                            <a href="https://olatechs.com/">www.olatechs.com</a>
+                                        </th>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+    document.getElementById('download-btn').addEventListener('click', function () {
+        const element = document.getElementById('number-container');
+        const opt = {
+            margin: 0,
+            filename: 'salary_slip.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a3', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(opt).save();
+    });
+</script>
+
+
+
+
+{% block footer %}
+{% endblock footer %}
+
+{% endblock main_content %}

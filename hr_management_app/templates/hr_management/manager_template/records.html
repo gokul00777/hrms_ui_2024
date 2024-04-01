@@ -1,0 +1,599 @@
+{% extends 'hr_management/manager_template/base_template.html' %}
+{% block page_title %}
+{% endblock page_title %}
+<!-- Bootstrap CSS -->
+
+
+{% block main_content %}
+<!-- Main content -->
+<div>
+  <div class="form-group col-md-6">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+  </div>
+  <div class="container-fluid" style="width:900px;">
+
+    <section class="container-fluid">
+      <div class="container-fluid">
+        <div class="container">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title; text-center">Employee Personal Information</h3>
+            </div>
+
+            <form role="form" method="post" class="container">
+              {% csrf_token %}
+              {% for i in personal_info %}
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Employee ID</label>
+                  <input type="text" class="form-control" value="{{ employee.emp_id }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Email</label>
+                  <input type="text" class="form-control" value="{{ user.email }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Username</label>
+                  <input type="text" class="form-control" value="{{ user.username }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>First Name</label>
+                  <input type="text" class="form-control" value="{{ user.first_name }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Last Name</label>
+                  <input type="text" class="form-control" value="{{ user.last_name }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>PF UAN Number</label>
+                  <input type="text" class="form-control" value="{{ i.pf_uan_no }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Contact Number</label>
+                  <input type="text" class="form-control" value="{{ i.contact_no }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Emergency Contact Number</label>
+                  <input type="text" class="form-control" value="{{ i.emergency_contact_no }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Pan Card No</label>
+                  <input type="text" class="form-control" value="{{ i.pancard_no }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Aadhar Card No</label>
+                  <input type="text" class="form-control" value="{{ i.adhaar_no }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Blood Group</label>
+                  <input type="text" class="form-control" value="{{ i.blood_group }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Date of Birth</label>
+                  <input type="text" class="form-control" value="{{ i.dob }}" disabled="disabled">
+                </div>
+              </div>
+
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Gender</label>
+                  <input type="text" class="form-control" value="{{ i.gender }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Marital Status</label>
+                  <input type="text" class="form-control" value="{{ i.marital_status }}" disabled="disabled">
+                </div>
+              </div>
+
+
+              <div class="form-row">
+
+                <div class="form-group col-md-6">
+                  <label>Highest Qualification</label>
+                  <input type="text" class="form-control" value="{{ i.highest_qualification }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Previous Company Name</label>
+                  <input type="text" class="form-control" value="{{ i.previous_company_name }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Date Of Joining</label>
+                  <input type="text" class="form-control" value="{{ i.date_of_joining }}" disabled="disabled">
+                </div>
+              </div>
+              {% endfor %}
+            </form>
+          </div>
+        </div>
+        <!-- /.card -->
+
+        <!--Employee Current Address-->
+        <div class="container">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title; text-center">Employee Current Address</h3>
+            </div>
+            <form role="form" method="post" class="container">
+              {% for i in current_address %}
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Address Type</label>
+                  <input type="text" class="form-control" value="{{ i.add_type }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Address Line1</label>
+                  <input type="text" class="form-control" value="{{ i.address1 }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Address Line2</label>
+                  <input type="text" class="form-control" value="{{ i.address2 }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Zip Code</label>
+                  <input type="text" class="form-control" value="{{ i.zip_code }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>City</label>
+                  <input type="text" class="form-control" value="{{ i.city }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>District</label>
+                  <input type="text" class="form-control" value="{{ i.dist }}" disabled="disabled">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>State</label>
+                  <input type="text" class="form-control" value="{{ i.state }}" disabled="disabled">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Country</label>
+                  <input type="text" class="form-control" value="{{ i.country }}" disabled="disabled">
+                </div>
+              </div>
+              {% endfor %}
+            </form>
+          </div>
+        </div>
+        <!--/Employee Current Address-->
+
+        <!-- Employee Perment Address -->
+        <div class="container">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title; text-center">Employee Permanent Address</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="container">
+              <div class="form-row;container-fluid">
+                <form action="">
+                  {% for i in per_address %}
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Address Type</label>
+                      <input type="text" class="form-control" value="{{ i.per_add_type }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Address Line1</label>
+                      <input type="text" class="form-control" value="{{ i.per_address1 }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Address Line2</label>
+                      <input type="text" class="form-control" value="{{ i.per_address2 }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Zip Code</label>
+                      <input type="text" class="form-control" value="{{ i.per_zip_code }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>City</label>
+                      <input type="text" class="form-control" value="{{ i.per_city }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>District</label>
+                      <input type="text" class="form-control" value="{{ i.per_dist }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>State</label>
+                      <input type="text" class="form-control" value="{{ i.per_state }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Country</label>
+                      <input type="text" class="form-control" value="{{ i.per_country }}" disabled="disabled">
+                    </div>
+                  </div>
+                  {% endfor %}
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Employee Perment Address -->
+
+        <!-- Employee Family Details -->
+        <div class="container">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title; text-center">Employee Family Details</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="container">
+              <div class="form-row;container-fluid">
+                <form action="">
+                  {% for i in emp_family_details %}
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member1 Name</label>
+                      <input type="text" class="form-control" value="{{ i.member1_name }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Member1 Date of Birth</label>
+                      <input type="text" class="form-control" value="{{ i.merber1_dob }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member1 Aadhar No</label>
+                      <input type="text" class="form-control" value="{{ i.merber1_aadhar_no }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Relationship with Member1</label>
+                      <input type="text" class="form-control" value="{{ i.relationship1 }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member2 Name</label>
+                      <input type="text" class="form-control" value="{{ i.member2_name }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Member2 Date of Birth</label>
+                      <input type="text" class="form-control" value="{{ i.merber2_dob }}" disabled="disabled">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member2 Aadhar No</label>
+                      <input type="text" class="form-control" value="{{ i.merber2_aadhar_no }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Relationship with Member2</label>
+                      <input type="text" class="form-control" value="{{ i.relationship2 }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member3 Name</label>
+                      <input type="text" class="form-control" value="{{ i.member3_name }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Member3 Date of Birth</label>
+                      <input type="text" class="form-control" value="{{ i.merber3_dob }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member3 Aadhar No</label>
+                      <input type="text" class="form-control" value="{{ i.merber3_aadhar_no }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Relationship with Member3</label>
+                      <input type="text" class="form-control" value="{{ i.relationship3 }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member4 Name</label>
+                      <input type="text" class="form-control" value="{{ i.member4_name }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Member4 Date of Birth</label>
+                      <input type="text" class="form-control" value="{{ i.merber4_dob }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member4 Aadhar No</label>
+                      <input type="text" class="form-control" value="{{ i.merber4_aadhar_no }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Relationship with Member4</label>
+                      <input type="text" class="form-control" value="{{ i.relationship4 }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member5 Name</label>
+                      <input type="text" class="form-control" value="{{ i.member5_name }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Member5 Date of Birth</label>
+                      <input type="text" class="form-control" value="{{ i.merber5_dob }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Member5 Aadhar No</label>
+                      <input type="text" class="form-control" value="{{ i.merber5_aadhar_no }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Relationship with Member5</label>
+                      <input type="text" class="form-control" value="{{ i.relationship5 }}" disabled="disabled">
+                    </div>
+                  </div>
+                </form>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Employee Family Details -->
+
+
+        <!--Employee Bank Details -->
+
+        <div class="container">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title; text-center">Employee Bank Details</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="container">
+              <div class="form-row;container-fluid">
+                <form action="">
+                  {% for i in bank_details %}
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Bank Name</label>
+                      <input type="text" class="form-control" value="{{ i.bank_name }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" value="{{ i.branch }}" disabled="disabled">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Account Number</label>
+                      <input type="text" class="form-control" value="{{ i.account_number }}" disabled="disabled">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>IFSC Number</label>
+                      <input type="text" class="form-control" value="{{ i.ifsc_number }}" disabled="disabled">
+                    </div>
+                  </div>
+                  {% endfor %}
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--/Employeee Bank Details-->
+
+        <!--EMployee Documents -->
+        <div class="container">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title; text-center">Employee Documents Details</h3>
+            </div>
+            <form action="">
+              <div class="table-responsive">
+                <table class="table border" style="border-width: 2px;" border="2px">
+                  <thead class="card-primary">
+                    <tr>
+                      <th>Photo</th>
+                      <th>Aadhar</th>
+                      <th>Pan</th>
+                      <th>SSC Marksheet</th>
+                      <th>HSC Marksheet</th>
+                      <th>Diploma Marksheet</th>
+                      <th>Degree Marksheet</th>
+                      <th>Bank Passbook</th>
+                      <th>Employee Passport</th>
+                      <th>Reliving Letter</th>
+                      <th>Family Member 1 Aadhar</th>
+                      <th>Family Member 2 Aadhar</th>
+                      <th>Family Member 3 Aadhar</th>
+                      <th>Family Member 4 Aadhar</th>
+                      <th>Family Member 5 Aadhar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for document in documents %}
+                    <tr>
+                      <td>
+                        {% if document.employee_photo %}
+                        <a href="{{ document.employee_photo.url }}" target="_blank">Employee Photo</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.employee_aadhar %}
+                        <a href="{{ document.employee_aadhar.url }}" target="_blank">Employee Aadhar</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.employee_pan %}
+                        <a href="{{ document.employee_pan.url }}" target="_blank">Employee Pan</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.ssc_marksheet %}
+                        <a href="{{ document.ssc_marksheet.url }}" target="_blank">Employee SSC Marksheet</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.hsc_marksheet %}
+                        <a href="{{ document.hsc_marksheet.url }}" target="_blank">Employee HSC Marksheet</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.diploma_marksheet %}
+                        <a href="{{ document.diploma_marksheet.url }}" target="_blank">Employee Diploma Marksheet</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.degree_marksheet %}
+                        <a href="{{ document.degree_marksheet.url }}" target="_blank">Employee Degree Marksheet</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.bank_passbook %}
+                        <a href="{{ document.bank_passbook.url }}" target="_blank">Employee Bank Passbook</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.passport %}
+                        <a href="{{ document.passport.url }}" target="_blank">Employee Passport Marksheet</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.reliving_letter %}
+                        <a href="{{ document.reliving_letter.url }}" target="_blank">Relieving Letter</a>
+                        {% else %}
+                        Not available
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.family_member1_aadhar %}
+                        <p><a href="{{ document.family_member1_aadhar.url }}" target="_blank">Family Member1
+                            Aadhar</a>
+                        </p>
+                        {% else %}
+                        <p>Not available</p>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.family_member2_aadhar %}
+                        <p><a href="{{ document.family_member2_aadhar.url }}" target="_blank">Family Member2 Aadhar
+                            Marksheet</a></p>
+                        {% else %}
+                        <p>Not available</p>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.family_member3_aadhar %}
+                        <p><a href="{{ document.family_member3_aadhar.url }}" target="_blank">Family Member3 Aadhar
+                            Marksheet</a></p>
+                        {% else %}
+                        <p>Not available</p>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.family_member4_aadhar %}
+                        <p><a href="{{ document.family_member4_aadhar.url }}" target="_blank">Family Member4 Aadhar
+                            Marksheet</a></p>
+                        {% else %}
+                        <p>Not available</p>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if document.family_member5_aadhar %}
+                        <p><a href="{{ document.family_member5_aadhar.url }}" target="_blank">Family Member5 Aadhar
+                            Marksheet</a></p>
+                        {% else %}
+                        <p>Not available</p>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!--/Employee Documents-->
+      </div>
+    </section>
+
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"
+      integrity="sha512-7QD0dR+V7dbJ+t9Xu3qijC+NO0uJntAC8sSeOCa4+4dwslY4Mdpk/a/WadJ08ZhSsd+Mt90FOnOwys2+/rfvJg=="
+      crossorigin="anonymous"></script>
+
+
+
+    <!-- /.content -->
+  </div>
+</div>
+{% endblock main_content %}

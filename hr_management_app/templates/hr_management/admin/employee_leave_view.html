@@ -1,0 +1,89 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% block page_title %}
+Employee Apply for Leave
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Employee Apply for Leave</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="table">
+                    <table class="table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee ID</th>
+                            <th>Employee Name</th>
+                            <th>Leave From</th>
+                            <th>Leave To</th>
+                            <th>Leave Type</th>
+                            <th>Leave Message</th>
+                            <th>Applied On</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for leave in leaves %}
+                        <tr>
+                            <td>{{ leave.id }}</td>
+                            <td>{{ leave.employee_id.emp_id }}</td>
+                            <td>{{ leave.employee_id.admin.first_name }} {{ leave.employee_id.admin.last_name }}</td>
+                            <td>{{ leave.leave_start_date }}</td>
+                            <td>{{ leave.leave_end_date }}</td>
+                            <td>{{ leave.leave_type }}</td>
+                            <td><textarea rows="2"cols='35' readonly>{{ leave.leave_message }}</textarea readonly></td>
+                            <td>{{ leave.created_at|date:"M. d, Y" }}</td>
+                            <td>
+                              {% if leave.leave_status == 0 %}
+                                  <button class="btn btn-success" onclick="disableButtons(this)" >
+                                      <a href="{% url 'employee_approve_leave' leave_id=leave.id %}" style="color: white;">Approve</a>
+                                  </button>
+                                  <button class="btn btn-danger" onclick="disableButtons(this)">
+                                      <a href="{% url 'employee_disapprove_leave' leave_id=leave.id %}" style="color: white;">Reject</a>
+                                  </button>
+                              {% elif leave.leave_status == 1 %}
+                                  <button class="btn btn-warning" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Approved</button>
+                              {% else %}
+                                  <button class="btn btn-danger" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Reject</button>
+                              {% endif %}
+                          </td>
+
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <!-- /.card -->
+          </div>
+          </div>
+      </div>
+      <script>
+        function disableButtons(clickedButton) {
+            // Disable the clicked button to prevent multiple submissions
+            clickedButton.disabled = true;
+    
+            // Disable the anchor element inside the clicked button
+            clickedButton.querySelector('a').style.pointerEvents = "none";
+    
+            // Disable the sibling button (either Approve or Reject)
+            var siblingButton = clickedButton.nextElementSibling;
+            if (siblingButton) {
+                siblingButton.disabled = true;
+                siblingButton.querySelector('a').style.pointerEvents = "none";
+            }
+        }
+    </script>
+      <!-- Reload page after 1 minute -->
+      <script>
+        setInterval(function() {
+          window.location.reload();
+        }, 60000);
+      </script>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

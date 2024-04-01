@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <p>Hello Dear {{ employee_name }}</p>
+    <p>Your reimbursement request with the following details has been approved by the accounts department:</p>
+    <ul>
+        <li>Claim Number: {{ bill_no }}</li>
+        <li>Status: Approved by Accounts</li>
+    </ul>
+    <p>Your payment has been processed. Thank you for your patience!</p>
+
+    <p>Please click the following link to access the application:</p>        
+    <p><a href="{{ application_link }}">{{ application_link }}</a></p>
+
+    <p>Regards,</p>
+    <p>HRMS</p>
+</body>
+</html>

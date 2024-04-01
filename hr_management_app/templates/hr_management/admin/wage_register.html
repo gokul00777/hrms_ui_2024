@@ -1,0 +1,313 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% load static %}
+{% block page_title %}
+<h1 style="font-family: 'Times New Roman', Times, serif;">
+    WAGE REGISTER
+    <span style="color: red;  ">
+        {{ month|upper }} {{ year }}
+    </span>
+</h1>
+{% endblock page_title %}
+
+{% block custom_css %}
+<style>
+    table {
+        text-align: center;
+    }
+
+    .td-height {
+        height: 50px;
+    }
+
+    .inactive-button {
+        background-color: #ffcccc;
+        /* Lighter shade of red */
+        color: white;
+        width: 155px;
+        height: 38px;
+    }
+
+    .inactive-button:hover {
+        filter: none;
+        /* Remove the blur effect on hover */
+        background-color: #f44336;
+
+    }
+
+    .active-button {
+        background-color: #f44336 !important;
+        /* Red color */
+    }
+
+    #myInput {
+        /* width: 0px; Set the desired width */
+        margin-left: auto;
+        /* Shift to the right */
+    }
+</style>
+{% endblock custom_css %}
+
+
+{% block main_content %}
+<div class="text-center">
+    <button id="downloadButton" class="btn btn-success">
+        <i class="nav-icon fas fa-download"></i>
+        <a href="#" style="color: white;">
+            <span style="display: inline-block; width: 110px;">Download Excel</span>
+        </a>
+    </button>
+    <button id="popupButton" class="btn btn-warning">
+        <a href="#" style="color: white;">Freeze Salary Slip</a>
+    </button>
+
+    <button id="generateButton" class="inactive-button  btn btn-danger" disabled>
+        <i class="nav-icon fas fa-ban"></i> Deactivate
+    </button>
+</div>
+<div class="input-group">
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search ..." class="form-control-sm">
+    <div class="input-group-append">
+        <span class="input-group-text bg-white">
+            <i class="fas fa-search text-primary"></i>
+        </span>
+    </div>
+</div>
+
+
+<div class="table-responsive" id="myTable">
+    <table class="table table-bordered" id="wageRegisterTable">
+        <thead style="background-color:aquamarine;">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Employee ID</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Sex</th>
+                <th scope="col">Age</th>
+                <th scope="col">UAN</th>
+                <th scope="col">Nature of Work and Designation</th>
+                <th scope="col">No of Working Days</th>
+                <!-- <th scope="col">Total paid Days</th> -->
+                <th scope="col">Sunday &amp; Holiday</th>
+                <th scope="col">Total Payable Days</th>
+                <th scope="col">Basic</th>
+                <th scope="col">HRA</th>
+                <th scope="col">Conveyance</th>
+                <th scope="col">Statutory Bonus</th>
+                <th scope="col">Other Allow</th>
+                <th scope="col">Gross Salary</th>
+                <th scope="col">PF</th>
+                <th scope="col">PT</th>
+                <th scope="col">ESIC</th>
+                <th scope="col">IT</th>
+                <th scope="col">LWF</th>
+                <th scope="col">Other Deductions</th>
+                <th scope="col">Total Deductions</th>
+                <th scope="col">Net Payable</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for employee in employees %}
+            {% for wage_register in wage_registers %}
+            {% if wage_register.employee == employee.emp_id %}
+            <tr>
+                {% if forloop.parentloop.counter == forloop.counter %}
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.employee.emp_id}}</td>
+                <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                <td>{{ employee.gender }}</td>
+                <td>{{ wage_register.age }}</td>
+                <td>{{ employee.pf_uan_no }}</td>
+                <td>{{ employee.employee.designation }}</td>
+                <td>{{ wage_register.days_payable }}</td>
+                <!-- <td>{{ wage_register.days_paid }}</td> -->
+                <td>{{ wage_register.sunday_and_holidays }}</td>
+                <td>{{ wage_register.new_days_payable }}</td>
+                <td>{{ wage_register.basic_salary|floatformat:2 }}</td>
+                <td>{{ wage_register.hra|floatformat:2 }}</td>
+                <td>{{ wage_register.conveyance_allowance|floatformat:2 }}</td>
+                <td>{{ wage_register.variable_component|floatformat:2 }}</td>
+                <td>{{ wage_register.flexible_component|floatformat:2 }}</td>
+                <td>{{ wage_register.gross_salary|floatformat:2 }}</td>
+                <td>{{ wage_register.provident_fund|floatformat:2 }}</td>
+                <td>{{ wage_register.professional_tax|floatformat:2 }}</td>
+                <td>{{ wage_register.esic|floatformat:2 }}</td>
+                <td>{{ wage_register.income_tax|floatformat:2 }}</td>
+                <td>{{ wage_register.lwf|floatformat:2 }}</td>
+                <td>{{ wage_register.other_deductions|floatformat:2 }}</td>
+                <td>{{ wage_register.total_deductions|floatformat:2 }}</td>
+                <td>{{ wage_register.net_salary|floatformat:2 }}</td>
+                <td>
+                    <a href="{% url 'edit_wage_register' wage_register.id %}" class="btn btn-success">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                    <!-- <a href="#" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Delete
+                    </a> -->
+                </td>
+                {% endif %}
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    const popupButton = document.getElementById("popupButton");
+    const generateButton = document.getElementById("generateButton");
+
+    // Function to activate the Generate Salary Slip button
+    function activateGenerateButton() {
+        generateButton.disabled = false;
+        generateButton.classList.remove("inactive-button");
+        generateButton.classList.add("active-button");
+        generateButton.innerText = "Generate Salary Slip";
+    }
+
+    // Function to deactivate the Generate Salary Slip button
+    function deactivateGenerateButton() {
+        generateButton.disabled = true;
+        generateButton.classList.remove("active-button");
+        generateButton.classList.add("inactive-button");
+        generateButton.innerText = "Deactivate";
+    }
+
+    // Function to handle the click event on the Generate Salary Slip button
+    function generateSalarySlips() {
+        // Call the URL generate_salary_slips
+        window.location.href = "{% url 'generate_salary_slips' %}";
+    }
+
+    popupButton.addEventListener("click", function () {
+        // Show the popup with two buttons (OK and Cancel)
+        const result = confirm("Are you sure you want to freeze the salary slip?");
+
+        // Check the result of the popup
+        if (result === true) {
+            activateGenerateButton();
+        } else {
+            deactivateGenerateButton();
+        }
+    });
+
+    generateButton.addEventListener("click", function () {
+        // Check if the Generate Salary Slip button is active
+        if (!generateButton.disabled) {
+            // Call the function to generate salary slips
+            generateSalarySlips();
+        }
+    });
+</script>
+
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+<script>
+    function downloadExcel() {
+        // Get the table element
+        var table = document.getElementById("wageRegisterTable");
+
+        // Create a new Excel workbook
+        var workbook = XLSX.utils.book_new();
+
+        // Convert the table to a worksheet
+        var worksheet = XLSX.utils.table_to_sheet(table);
+
+        // Remove blank rows
+        var data = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false });
+        worksheet = XLSX.utils.json_to_sheet(data, { skipHeader: true });
+
+        // Calculate column widths based on the content
+        var columnWidths = [];
+        var rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        rows.forEach(function (row) {
+            row.forEach(function (cell, columnIndex) {
+                var cellContentLength = cell ? String(cell).length : 10; // Default width if cell is empty
+                if (!columnWidths[columnIndex] || cellContentLength > columnWidths[columnIndex]) {
+                    columnWidths[columnIndex] = cellContentLength;
+                }
+            });
+        });
+
+        // Set the column widths in the worksheet
+        worksheet["!cols"] = columnWidths.map(function (width) {
+            return { wch: width + 2 }; // Add some padding to the calculated width
+        });
+
+        // Set the center alignment for all cells
+        var range = XLSX.utils.decode_range(worksheet["!ref"]);
+        for (var row = range.s.r; row <= range.e.r; row++) {
+            for (var col = range.s.c; col <= range.e.c; col++) {
+                var cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                var cell = worksheet[cellAddress];
+                if (cell && cell.t === "s") {
+                    cell.s = { alignment: { horizontal: "center", vertical: "center" } };
+                }
+            }
+        }
+
+        // Add the worksheet to the workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Wage Register");
+
+        // Convert the workbook to an Excel file
+        var excelFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+        // Create a Blob object from the Excel file data
+        var blob = new Blob([excelFile], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+        // Create a temporary link element to trigger the file download
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "wage_register.xlsx";
+        document.body.appendChild(link); // Append the link to the document body
+        link.click();
+
+        // Clean up the temporary link element
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+    // Attach the downloadExcel function to the button click event
+    document.getElementById("downloadButton").addEventListener("click", downloadExcel);
+</script>
+
+<script>
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, th, td, i, j, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        th = table.getElementsByTagName("th");
+
+        // Loop through all table rows, and hide those that don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            var matchFound = false; // Flag to track if a match is found in any of the columns
+            for (j = 0; j < tr[i].cells.length; j++) { // Loop through all cells in the current row
+                td = tr[i].cells[j];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        matchFound = true; // Set the flag if a match is found
+                        break; // Exit the inner loop since a match is found in this row
+                    }
+                }
+            }
+            if (matchFound) {
+                tr[i].style.display = ""; // Show the row if a match is found
+            } else {
+                tr[i].style.display = "none"; // Hide the row if no match is found
+            }
+        }
+
+        // Show the table header
+        for (j = 0; j < th.length; j++) {
+            th[j].style.display = "";
+        }
+    }
+</script>
+
+
+{% endblock main_content %}

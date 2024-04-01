@@ -1,0 +1,103 @@
+{% extends 'hr_management/employee_template/base_template.html' %}
+{% load static %}
+
+{% block main_content %}
+
+{% block custom_css %}
+<style>
+    /* Your custom CSS styles here */
+</style>
+{% endblock custom_css %}
+<div class="container-fluid" style="width:1000px;">
+<div class="form-container">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title text-center">Reimbursement Record Details</h3>
+        </div>
+        <div class="padding_bill" style="padding-left:20px;padding-right:20px;padding-bottom:20px;padding-top:20px;">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for enter in records %}
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="bill_no">Claim Number:</label>
+                    <input type="text" name="bill_no" id="bill_no" class="form-control" value="{{ enter.bill_no }}" readonly>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="total-amount">Total Amount:</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" value="{{ enter.total_amount }}" readonly>
+                        <div class="input-group-append">
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div><hr></div>
+            
+            {% endfor %}
+            <div id="records-container">
+                {% for entry in record %}
+                {% if entry.sr_no %}
+                <div class="record">
+                    <div class="form-row">
+                        <div class="form-group col-md-1">
+                            <label for="sr-no{{ entry.id }}">Bill No :</label>
+                            {% with serial_number=forloop.counter %}
+                            <input type="text" name="sr_no{{ entry.id }}" class="form-control"
+                                value="{{ entry.sr_no }}" readonly>
+                            {% endwith %}
+                        </div>
+                      <div class="form-group col-md-2">
+                        <label for="date{{ entry.id }}">Date:</label>
+                        {% with formatted_date=entry.date|date:"Y-m-d" %}
+                        <input type="date" name="date{{ entry.id }}" class="form-control" value="{{ formatted_date }}" readonly>
+                        {% endwith %}
+                    </div>
+                        <div class="form-group col-md-2">
+                            <label for="amount{{ entry.id }}">Amount:</label>
+                            <input type="number" name="amount{{ entry.id }}" class="form-control"
+                                value="{{ entry.amount }}" readonly>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="reason{{ entry.id }}">Reason:</label>
+                            <input type="text" name="reason{{ entry.id }}" class="form-control"
+                                value="{{ entry.reason }}" readonly>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="description{{ entry.id }}">Description:</label>
+                            <textarea name="description{{ entry.id }}" class="form-control"  style="height: 38px;"readonly>{{ entry.description }}</textarea>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="attachment{{ entry.id }}">Attachment:</label><br>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        {% if entry.attachment %}
+                                        <a href="{{ entry.attachment.url }}" target="_blank">View Attachment</a>
+                                        {% else %}
+                                        No attachment
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div><hr></div>
+                {% endif %}
+                {% endfor %}
+                
+            </div>
+            
+           
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+{% endblock main_content %}

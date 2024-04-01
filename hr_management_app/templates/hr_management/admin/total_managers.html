@@ -1,0 +1,90 @@
+{% extends 'hr_management/admin/base_template.html' %}
+{% load static %}
+    {% block custom_css %}
+        {% block page_title %}
+                Manage Employees
+        {% endblock page_title %}
+        <style>
+            .profile-pic-container {
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 50%;
+                    overflow: hidden;
+                    }
+
+                    .profile-pic {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    }
+
+        </style>
+    {% endblock custom_css %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Employee Details</h3>
+                <div class="card-tools">
+                  <form method="get">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                      <input type="text" name="search" class="form-control float-right" placeholder="Search" value="{{ request.GET.q }}">
+            
+                      <div class="input-group-append">
+                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>PROFILE PIC</th>
+                      <th>FIRST NAME</th>
+                      <th>LAST NAME</th>
+                      <th>EMAIL</th>
+                      <th>LAST LOGIN</th>
+                      <th>DATE OF JOINING</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for manager in managers %}
+                  {% if manager %}
+                    <tr>
+                      <td>{{ manager.id }}</td>
+                      <td>
+                        <div class="profile-pic-container">
+                          <img src="{{ manager.employees.profile_pic }}" class="profile-pic" />
+                        </div>
+                      </td>
+                      <td>{{ manager.first_name }}</td>
+                      <td>{{ manager.last_name }}</td>
+                      <td>{{ manager.email }}</td>
+                      <td>{{ manager.last_login }}</td>
+                      <td>{{ manager.employees.employee_onboarding.date_of_joining}}</td> 
+                    </tr>
+                    {% else %}
+                    <p>No employee found with the given ID.</p>
+                  {% endif %}
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

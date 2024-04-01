@@ -1,0 +1,223 @@
+{% extends 'hr_management/manager_template/base_template.html' %}
+{% block page_title %}
+{% endblock page_title %}
+{% block custom_css %}
+
+<style>
+    .center-pagination .step-links {
+        text-align: center;
+    }
+    .center-pagination .step-links {
+        text-align: center;
+    }
+    /* Styles for the modal popup */
+    #customPopup {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background-color: #FEFEFE;
+        position: fixed;
+        top: 50%;           /* Center vertically */
+        left: 50%;          /* Center horizontally */
+        transform: translate(-50%, -50%);  /* Adjust for centering */
+        margin: auto;
+        padding: 10px;
+        border: 1px solid #888;
+        width: 500px;
+        border-radius: 8px;
+        z-index: 1;
+    }
+    
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    textarea {
+        width: 100%;
+        height: 100px; /* Adjust the height of the textarea as per your needs */
+        margin-bottom: 10px;
+        resize: vertical;
+    }
+    #submitbutton{
+        width: 150px;
+        height: 40px;
+        margin-bottom: 10px;
+        resize: vertical;
+        align-items:center;
+        margin: 0 auto 10px; /* This centers the button horizontally and adds a bottom margin */
+        display: block;
+    }
+    .button-container {
+        display: flex;
+        gap: 5px;
+        /* Adjust the gap between buttons as needed */
+    }
+    .button-container button {
+        flex: 1;
+    }
+</style>
+
+{% endblock custom_css %}
+{% block main_content %}
+s<section class="content">
+    <div class="container-fluid" style="width:1250;">
+        <div class="row">
+            <div class="col-md-12">
+                
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Employee Reimbursement Requests</h3>
+                    </div>
+                    <div class="table">
+                        <table class="table">
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Claim No</th>
+                                <th>Claim Date</th>
+                                <th>Claim Amount</th>
+                                <th>Attachment</th>
+                                <th>Approved by Manager</th>
+                                <th>Query</th>
+                                <th>Action</th>
+                            </tr>
+                            {% for reimbursement in reimbursements %}
+                            <tr>
+                                <td>{{ reimbursement.employee_id.emp_id }}</td>
+                                <td>{{ reimbursement.employee_id.admin.first_name }} {{ reimbursement.employee_id.admin.last_name }}</td>
+                                <td>{{ reimbursement.bill_no }}</td>
+                                <td>{{ reimbursement.created_at }}</td>
+                                <td>{{ reimbursement.total_amount}}</td>
+                                
+                                <td>
+                                    <a href="{% url 'view_reimbursement' reimbursement.id %}" class="btn btn btn-primary">View</a>         
+                                </td>
+                                
+                                <td>{{ reimbursement.approved_by }}</td>
+
+                                <td>
+                                    {% if reimbursement.query %}
+                                       <textarea rows="1" cols="100" readonly>{{ reimbursement.query }} </textarea> 
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if reimbursement.reimbursement_status == 0 %}
+                                    <div class="button-container">
+                                        <button class="btn btn-success" onclick="disableButtons(this)"><a
+                                                href="{% url 'employee_approve_reimbursement' id=reimbursement.id %}"
+                                                class="btn btn-success btn-sm">Approve</a></button>
+                                        <button type="button" onclick="showPopup('{{ reimbursement.id }}')"
+                                            class="btn btn-danger btn-sm">Send Back</button>
+                                    </div>
+                                        <div id="customPopup_{{ reimbursement.id }}" style="display: none;">
+                                            <div class="modal-content">
+                                                <span class="close" onclick="closePopup('{{ reimbursement.id }}')">&times;</span>
+                                                <textarea id="customTextField_{{ reimbursement.id }}" name="query" placeholder="Enter Send Back Reason..."></textarea>
+                                                <button type="button" id="submitbutton_{{ reimbursement.id }}" onclick="submitCustomText('{{ reimbursement.id }}')" class="btn btn-success">Submit</button>
+                                            </div>
+                                        </div>
+                                        <form id="recheckForm_{{ reimbursement.id }}" method="POST" action="{% url 'employee_disapprove_reimbursement' id=reimbursement.id %}" style="display: none;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="query" id="recheckInput_{{ reimbursement.id }}">
+                                        </form>
+                                    {% elif reimbursement.reimbursement_status == 1 %}
+                                        <button class="btn btn-warning" disabled="disabled">Approved</button>
+                                    {% elif reimbursement.reimbursement_status == 3 %}
+                                        <button class="btn btn-success" disabled="disabled">Payment Done</button>
+                                    {% else %}
+                                        <button class="btn btn-danger" disabled="disabled">Re-Checked</button>
+                                    {% endif %}
+                                </td>
+                                
+                                
+                                
+                            </tr>
+                            {% endfor %}
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pagination center-pagination">
+        <span class="step-links">
+            {% if reimbursements.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ reimbursements.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ reimbursements.number }} of {{ reimbursements.paginator.num_pages }}.
+            </span>
+
+            {% if reimbursements.has_next %}
+            <a href="?page={{ reimbursements.next_page_number }}">next</a>
+            <a href="?page={{ reimbursements.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <script>
+        setInterval(function () {
+            window.location.reload();
+        }, 60000);
+    </script>
+    <script>
+        function showPopup(id) {
+            var customPopup = document.getElementById('customPopup_' + id);
+            customPopup.style.display = 'block';
+        }
+        
+        function closePopup(id) {
+            var customPopup = document.getElementById('customPopup_' + id);
+            customPopup.style.display = 'none';
+        }
+        
+        function submitCustomText(id) {
+            var customTextField = document.getElementById('customTextField_' + id);
+            var inputElement = document.getElementById('recheckInput_' + id);
+            inputElement.value = customTextField.value;
+            var formElement = document.getElementById('recheckForm_' + id);
+            formElement.submit();
+            closePopup(id);
+        }
+    </script>
+    <script>
+        function disableButtons(clickedButton) {
+            // Disable the clicked button to prevent multiple submissions
+            clickedButton.disabled = true;
+    
+            // Disable the anchor element inside the clicked button
+            clickedButton.querySelector('a').style.pointerEvents = "none";
+    
+            // Disable the sibling button (either Approve or Reject)
+            var siblingButton = clickedButton.nextElementSibling;
+            if (siblingButton) {
+                siblingButton.disabled = true;
+                siblingButton.querySelector('a').style.pointerEvents = "none";
+            }
+        }
+    </script>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

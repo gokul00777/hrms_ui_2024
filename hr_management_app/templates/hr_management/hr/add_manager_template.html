@@ -1,0 +1,268 @@
+{% extends 'hr_management/hr/base_template.html' %}
+{% block page_title %}
+Add Manager
+{% endblock page_title %}
+{% block custom_css %}
+<style>
+  .custom-error {
+    max-width: 300px;
+    /* Adjust the width to your desired value */
+    margin: 0 auto;
+    /* Add this line to center the element */
+    text-align: center;
+    /* Add this line to center the text inside the element */
+  }
+</style>
+{% endblock custom_css %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  <div class="form-group">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div id="error-message" class="alert alert-danger custom-error" style="margin-top:10px">{{ message }}</div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+    <div id="success-message" class="alert alert-success custom-error" style="margin-top:10px">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+  </div>
+  <div class="container-fluid" style="width: 900px;">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- general form elements -->
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Add Manager</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form role="form" action="/add_manager_save" method="post" style="border: 2px;">
+            {% csrf_token %}
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Email address</label>
+                  <input type="email" class="form-control" name="email" placeholder="Enter email" id="id_email"
+                    autocomplete="off" required>
+                  <span id="email-error-message" style="color: red; display: none;">Invalid email address.</span>
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Username</label>
+                  <input type="text" class="form-control" placeholder="Username" name="username" id="id_username"
+                    autocomplete="off" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>First Name</label>
+                  <input type="text" class="form-control" placeholder="First Name" name="first_name" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Last Name</label>
+                  <input type="text" class="form-control" placeholder="Last Name" name="last_name" required>
+                </div>
+              </div>
+              <div class="row">
+
+                <div class="form-group col-md-6">
+                  <label>Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" placeholder="Password" id="id_password" name="password" required>
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-default" id="showPasswordBtn">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p id="password-error-message" style="display: none; color: red;">Password must be 8 characters or
+                    more with at least one uppercase letter, one lowercase letter, one digit, and one special character.
+                  </p>
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Confirm Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" name="confirm_password" id="id_confirm_password"
+                      placeholder="Confirm Password" required>
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-default" id="showConfirmPasswordBtn">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p id="confirm-password-error-message" style="display: none; color: red;">Passwords do not match.</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Department</label>
+                  <select name="department" class="form-control" required>
+                    <option value="">Select Department</option>
+                    <option value="DSBU">DSBU</option>
+                    <option value="HSBU">HSBU</option>
+                    <option value="SIBU">SIBU</option>
+                    <option value="SSBU">SSBU</option>
+                    <option value="SPBU">SPBU</option>
+                    <option value="HQ">HQ</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Designation</label>
+                  <input type="text" class="form-control" placeholder="Designation" name="designation"
+                    id="id_designation" autocomplete="off" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>Manager</label>
+                  <select name="manager" class="form-control">
+                    <option value="">Select Manager</option>
+                    {% for manager in manager %}
+                    <option value="{{ manager }}">{{ manager }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
+
+            <div class="text-center" style="padding-bottom: 40px;">
+              <button type="submit" class="btn btn-success">Add Manager</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function () {
+    $("#id_email").keyup(function () {
+      var email = $(this).val();
+
+      if (email != "") {
+        $.ajax({
+          url: "{% url 'check_email_exist' %}",
+          type: 'POST',
+          data: { email: email }
+        })
+          .done(function (response) {
+            console.log(response);
+            if (response == "True") {
+              $(".email_error").remove();
+              $("<span class='email_error' style='padding: 5px;color: red;font-weight: bold;'>Email Not Available</span>").insertAfter("#id_email");
+            }
+            else {
+              $(".email_error").remove();
+              $("<span class='email_error' style='padding: 5px;color: green;font-weight: bold;'>Email Available</span>").insertAfter("#id_email");
+            }
+          })
+          .fail(function () {
+            console.log("failed");
+          })
+      }
+      else {
+        $(".email_error").remove();
+      }
+    });
+
+    $("#id_username").keyup(function () {
+      var username = $(this).val();
+
+      if (username != "") {
+        $.ajax({
+          url: '{% url "check_username_exist" %}',
+          type: 'POST',
+          data: { username: username }
+        })
+          .done(function (response) {
+            console.log(response);
+            if (response == "True") {
+              $(".username_error").remove();
+              $("<span class='username_error' style='padding: 5px;color: red;font-weight: bold;'>Username Not Available</span>").insertAfter("#id_username");
+            }
+            else {
+              $(".username_error").remove();
+              $("<span class='username_error' style='padding: 5px;color: green;font-weight: bold;'>Username Available</span>").insertAfter("#id_username");
+            }
+          })
+          .fail(function () {
+            console.log("failed");
+          })
+      }
+      else {
+        $(".username_error").remove();
+      }
+    });
+
+    const emailInput = document.getElementById('id_email');
+    const emailErrorMessage = document.getElementById('email-error-message');
+    const passwordInput = document.getElementById('id_password');
+    const passwordErrorMessage = document.getElementById('password-error-message');
+    const confirmPasswordInput = document.getElementById('id_confirm_password');
+    const confirmPasswordErrorMessage = document.getElementById('confirm-password-error-message');
+    const passwordMatchIcon = document.getElementById('password-match-icon');
+
+    emailInput.addEventListener('input', function () {
+      const email = emailInput.value.trim();
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|olatechs)\.com$/;
+      if (!emailRegex.test(email)) {
+        emailErrorMessage.style.display = 'block';
+      } else {
+        emailErrorMessage.style.display = 'none';
+      }
+    });
+
+    passwordInput.addEventListener('input', function () {
+      const password = passwordInput.value;
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        passwordErrorMessage.style.display = 'block';
+      } else {
+        passwordErrorMessage.style.display = 'none';
+      }
+    });
+
+    confirmPasswordInput.addEventListener('input', function () {
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (password !== confirmPassword) {
+        confirmPasswordErrorMessage.style.display = 'block';
+        passwordMatchIcon.style.display = 'none'; // Hide the tick icon
+      } else {
+        confirmPasswordErrorMessage.style.display = 'none';
+        passwordMatchIcon.style.display = 'block'; // Show the tick icon
+      }
+    });
+  });
+
+  function togglePasswordVisibility(inputElement, toggleBtn) {
+    const inputType = inputElement.getAttribute('type');
+    const newType = inputType === 'password' ? 'text' : 'password';
+    inputElement.setAttribute('type', newType);
+    const iconClass = newType === 'password' ? 'fa-eye' : 'fa-eye-slash';
+    toggleBtn.innerHTML = `<i class="fa ${iconClass}"></i>`;
+  }
+
+  // Event listeners to toggle password visibility
+  const showPasswordBtn = document.getElementById('showPasswordBtn');
+  const showConfirmPasswordBtn = document.getElementById('showConfirmPasswordBtn');
+  const passwordInput = document.getElementById('id_password');
+  const confirmPasswordInput = document.getElementById('id_confirm_password');
+
+  showPasswordBtn.addEventListener('click', () => {
+    togglePasswordVisibility(passwordInput, showPasswordBtn);
+  });
+
+  showConfirmPasswordBtn.addEventListener('click', () => {
+    togglePasswordVisibility(confirmPasswordInput, showConfirmPasswordBtn);
+  });
+</script>
+{% endblock custom_js %}

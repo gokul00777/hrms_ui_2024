@@ -1,0 +1,154 @@
+{% extends 'hr_management/hr/base_template.html' %}
+
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+<style>
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="container-fluid" style="width:900px;">
+      <div class="align-center">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Edit Profile</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="{% url 'hr_profile_save' %}" method="post" id="profileForm">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control" name="username" value="{{ user.username }}" disabled="disabled">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" name="username" value="{{ user.email }}" disabled="disabled">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- The rest of the fields -->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Profile Pic</label>
+                        <input type="file" class="form-control" name="profile_pic" value="{{ user.profile_pic }}">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Change Password?</label>
+                        <input type="password" class="form-control" name="password" id="id_password" placeholder="Fill Only If You want to Change Password">
+                        <p id="password-error-message" style="display: none; color: red;">Password must be 8 characters or more with at least one uppercase letter, one lowercase letter, one digit, and one special character.</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Confirm Password</label>
+                      <div class="input-group">
+                        <input type="password" class="form-control" name="confirm_password" id="id_confirm_password" placeholder="Confirm Password">
+                        <div class="input-group-append">
+                          <span class="input-group-text" id="password-match-icon" style="color: green; background-color: transparent;">
+                            <i class="fas fa-check-circle"></i>
+                          </span>
+                        </div>
+                      </div>
+                      <p id="confirm-password-error-message" style="display: none; color: red;">Passwords do not match.</p>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="col-md-12">
+                    <div class="form-group text-center">
+                      <div class="">
+                        <button type="submit" name="save_profile" class="btn btn-success btn-sm mx-auto">Save Profile</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+
+<script>
+  function validatePasswords() {
+    const password = document.getElementById('id_password').value;
+    const confirmPassword = document.getElementById('id_confirm_password').value;
+    const passwordErrorMessage = document.getElementById('confirm-password-error-message');
+    const passwordMatchIcon = document.getElementById('password-match-icon');
+
+    // Reset previous error messages and icons
+    passwordErrorMessage.style.display = 'none';
+    passwordMatchIcon.style.display = 'none';
+
+    // Validate passwords
+    if (password && password !== confirmPassword) {
+      passwordErrorMessage.style.display = 'block';
+    } else if (password && password === confirmPassword) {
+      passwordMatchIcon.style.display = 'block';
+    }
+  }
+
+  const passwordInput = document.getElementById('id_password');
+  const passwordErrorMessage = document.getElementById('password-error-message');
+  const confirmInput = document.getElementById('id_confirm_password');
+
+  passwordInput.addEventListener('input', function () {
+    const password = passwordInput.value;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      passwordErrorMessage.style.display = 'block';
+    } else {
+      passwordErrorMessage.style.display = 'none';
+      validatePasswords(); // Call the function to check if passwords match after each input
+    }
+  });
+
+  confirmInput.addEventListener('input', function () {
+    validatePasswords(); // Call the function to check if passwords match after each input
+  });
+</script>
+<!-- /.content -->
+{% endblock main_content %}

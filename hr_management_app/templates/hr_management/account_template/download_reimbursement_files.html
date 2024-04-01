@@ -1,0 +1,110 @@
+{% extends 'hr_management/account_template/base_template.html' %}
+{% load static %}
+
+{% block custom_css %}
+<style>
+    .container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    /* Reduce the height and width of the select boxes */
+    select {
+        padding: 5px;
+        /* Adjust padding to control height */
+        width: 20px;
+        /* Adjust width as needed */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        /* Adjust font size as needed */
+    }
+
+    button {
+        padding: 10px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    i {
+        margin-right: 5px;
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+<div>
+    <h2 style="text-align: center;"><i class="fas fa-download"></i> Download Reimbursement Files</h2>
+    <br>
+    <form id="month-form" action="{% url 'download_reimbursement_files' %}" method="POST">
+        {% csrf_token %}
+        <div class="container-fluid" style="width:900px;  padding-bottom: 20px; ">
+            <div class="align-center">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card card-primary">
+                            <div class="card-header ">
+                                <h3 class="card-title">Reimbursement Files</h3>
+                            </div>
+                            <div class="row justify-content-center" style="padding-top: 20px;padding-left: 100px;">
+                                <div class="col-md-4 years">
+                                    <label for="year">Select Year:</label>
+                                    <select id="year" name="year" class="form-control form-group col-md-8 text-center"
+                                        required>
+                                        <option value="">-- Select Year --</option>
+                                        {% for year in years %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 months">
+                                    <label for="month">Select Month:</label>
+                                    <select id="month" name="month" class="form-control form-group col-md-8 text-center"
+                                        required>
+                                        <option value="">-- Select Month --</option>
+                                        {% for month in months %}
+                                        <option value="{{ month }}">{{ month }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="container-fluid"
+                                    style="width:900px; padding-bottom: 60px; padding-top: 20px; ">
+                                    <div class="form-row justify-content-center">
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-success"><i class="fas fa-cloud-download-alt"></i> Download Files</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock main_content %}

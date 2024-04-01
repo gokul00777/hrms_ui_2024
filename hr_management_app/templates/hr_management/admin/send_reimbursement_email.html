@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<body>
+    <h2>Reimbursement Submission</h2>
+    <p>Hello {{ manager_name }},</p>
+    <p>Employee {{ employee_name }} has submitted a reimbursement request with the following details:</p>
+    <ul>
+        <li>Claim Number: {{ bill_no }}</li>
+        <li>Total Amount: {{ amount }}</li>
+    </ul>
+    <p>This request is pending with you for approval.</p>
+    <p>Please log in to the HRMS system to review and approve/reject this reimbursement request.</p>
+
+    <p>Please click the following link to access the application:</p>     
+    <p><a href="{{ application_link }}">{{ application_link }}</a></p>
+
+    <p>Regards</p>
+    <p>HRMS</p>
+</body>

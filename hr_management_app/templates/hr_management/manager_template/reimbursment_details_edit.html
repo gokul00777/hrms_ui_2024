@@ -1,0 +1,280 @@
+{% extends 'hr_management/manager_template/base_template.html' %}
+{% load static %}
+
+{% block main_content %}
+
+{% block custom_css %}
+<style>
+   
+    
+</style>
+{% endblock custom_css %}
+
+<div class="form-container">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title text-center">Edit Reimbursement Data</h3>
+        </div>
+        <div class="padding_bill" style="padding-left:20px;padding-right:20px;padding-bottom:20px;padding-top:20px;">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="bill_no">Bill Number:</label>
+                    <input type="text" name="bill_no" id="bill_no" class="form-control" value="{{ record.bill_no }}" required>
+                </div>
+                <div class="form-group col-md-3" id="total-amount-container">
+                    <label for="total-amount">Total Amount:</label>
+                    <input type="number" id="total-amount" name="total_amount" class="form-control" value="{{ record.total_amount }}" readonly>
+                </div>
+            </div>
+            
+            <div id="records-container">
+                {% for entry in records %}
+                {% if entry.sr_no %}
+
+                <div class="record" data-record-id="{{ entry.id }}">
+                    <div class="form-row">
+                        <!-- Inside the loop for entries in the records -->
+                        <div class="form-group col-md-1">
+                            <label for="sr_no{{ entry.id }}">Invoice No:</label>
+                            <input type="text" name="sr_no{{ entry.id }}" class="form-control"  value="{{ entry.sr_no }}">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="date{{ entry.id }}">Date:</label>
+                            {% with formatted_date=entry.date|date:"Y-m-d" %}
+                            <input type="date" name="date{{ entry.id }}" class="form-control" value="{{ formatted_date }}">
+                            {% endwith %}
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label for="amount{{ entry.id }}">Amount:</label>
+                            <input type="number" name="amount{{ entry.id }}" class="form-control" value="{{ entry.amount }}">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="reason{{ entry.id }}">Reason:</label>
+                            <select name="reason{{ entry.id }}" class="form-control">
+                                <option value="Food" {% if entry.reason == "Food" %}selected{% endif %}>Food</option>
+                                <option value="Travel" {% if entry.reason == "Travel" %}selected{% endif %}>Travel</option>
+                                <option value="Sales Incentive" {% if entry.reason == "Sales Incentive" %}selected{% endif %}>Sales Incentive</option>
+                                <option value="Other" {% if entry.reason == "Other" %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="description{{ entry.id }}">Description:</label>
+                            <textarea name="description{{ entry.id }}" class="form-control" value="{{ entry.description }}"></textarea>
+                        </div>
+                        
+                        
+                        <div class="form-group col-md-2">
+                            <label for="attachment{{ entry.id }}">Attachment:</label>
+                            <div class="d-flex align-items-center">
+                                <input type="file" name="attachment{{ entry.id }}" class="form-control flex-grow-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        {% if entry.attachment %}
+                                        <a href="{{ entry.attachment.url }}" target="_blank">View Attachment</a>
+                                        {% else %}
+                                        No attachment
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <label>Actions:</label><br>
+                            <button type="button" class="btn btn-danger btn-m delete-record-btn" data-record-id="{{ entry.id }}">Delete</button>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>
+                </div>
+                {% endif %}
+
+                {% endfor %}
+            </div>
+
+            <button type="button" class="btn btn-primary" id="add-record-btn">Add Another Record</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+
+            
+        </form>
+    </div>
+    
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const recordsContainer = document.getElementById("records-container");
+        const addRecordBtn = document.getElementById("add-record-btn");
+        const totalAmountInput = document.getElementById("total-amount");
+        let totalAmount = 0;
+
+        // Calculate the initial total amount from existing records
+        const existingAmountInputs = recordsContainer.querySelectorAll("input[name^='amount']");
+        existingAmountInputs.forEach(input => {
+            const amount = parseFloat(input.value) || 0;
+            totalAmount += amount;
+            input.dataset.previousAmount = amount;
+        });
+        totalAmountInput.value = totalAmount.toFixed(2);
+
+        addRecordBtn.addEventListener("click", function() {
+            const newRecord = document.createElement("div");
+            newRecord.className = "record";
+
+            const recordIndex = recordsContainer.querySelectorAll('.record').length + 1;
+
+            newRecord.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group col-md-1">
+                        <label for="sr_no${recordIndex}">Invoice No:</label>
+                        <input type="text" name="sr_no${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="date${recordIndex}">Date:</label>
+                        <input type="date" name="date${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="amount${recordIndex}">Amount:</label>
+                        <input type="number" name="amount${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="reason${recordIndex}">Reason:</label>
+                        <select name="reason${recordIndex}" class="form-control" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Sales Incentive">Sales Incentive</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="description${recordIndex}">Description:</label>
+                        <textarea name="description${recordIndex}" class="form-control" style="height: 38px;" required></textarea>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="attachment${recordIndex}">Attachment:</label>
+                        <input type="file" name="attachment${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label>Actions:</label><br>
+                        <button type="button" class="btn btn-danger btn-m delete-record-btn" data-record-index="${recordIndex}">Delete</button>
+                    </div>
+                </div>
+                
+                <div><hr></div>
+            `;
+
+            recordsContainer.appendChild(newRecord);
+
+            // Update the total amount when a new amount input is added
+            const newAmountInput = newRecord.querySelector(`[name=amount${recordIndex}]`);
+            newAmountInput.addEventListener("change", function(event) {
+                const newAmount = parseFloat(event.target.value) || 0;
+                totalAmount += newAmount;
+                totalAmountInput.value = totalAmount.toFixed(2);
+            });
+
+            
+        });
+        recordsContainer.addEventListener("click", function(event) {
+            if (event.target.classList.contains("delete-record-btn")) {
+                const recordToRemove = event.target.closest('.record');
+                const amountToRemove = parseFloat(recordToRemove.querySelector(`[name^=amount]`).value) || 0;
+                totalAmount -= amountToRemove;
+                totalAmountInput.value = totalAmount.toFixed(2);
+                recordToRemove.remove();
+            }
+        });
+
+        // Update the total amount when an existing amount input changes
+        existingAmountInputs.forEach(input => {
+            input.addEventListener("change", function(event) {
+                const changedAmount = parseFloat(event.target.value) || 0;
+                const inputIndex = parseInt(event.target.name.match(/\d+/)[0]);
+                const previousAmount = parseFloat(event.target.dataset.previousAmount) || 0;
+                totalAmount = totalAmount - previousAmount + changedAmount;
+                totalAmountInput.value = totalAmount.toFixed(2);
+                event.target.dataset.previousAmount = changedAmount;
+            });
+        });
+    });
+</script>
+
+
+{% comment %}        
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const recordsContainer = document.getElementById("records-container");
+        const addRecordBtn = document.getElementById("add-record-btn");
+        const totalAmountInput = document.getElementById("total-amount");
+        let recordIndex = recordsContainer.querySelectorAll('.record').length + 1; // Start from the current number of records
+        let totalAmount = 0;
+
+        addRecordBtn.addEventListener("click", function() {
+            const newRecord = document.createElement("div");
+            newRecord.className = "record";
+
+            newRecord.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group col-md-1">
+                        <label for="sr_no${recordIndex}">Bill No:</label>
+                        <input type="text" name="sr_no${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="date${recordIndex}">Date:</label>
+                        <input type="date" name="date${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="amount${recordIndex}">Amount:</label>
+                        <input type="number" name="amount${recordIndex}" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="reason${recordIndex}">Reason:</label>
+                        <select name="reason${recordIndex}" class="form-control" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Sales Incentive">Sales Incentive</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="attachment${recordIndex}">Attachment:</label>
+                        <input type="file" name="attachment${recordIndex}" class="form-control" required>
+                    </div>
+                </div>
+                <div><hr></div>
+            `;
+
+            recordsContainer.appendChild(newRecord);
+            recordIndex++;
+        });
+
+        recordsContainer.addEventListener("change", function(event) {
+            const inputName = event.target.name;
+            if (inputName && inputName.startsWith("amount")) {
+                const recordIndex = parseInt(inputName.match(/\d+/)[0]);
+                const previousAmount = parseFloat(document.querySelector(`[name=amount${recordIndex}]`).dataset.previousAmount) || 0;
+                const newAmount = parseFloat(event.target.value) || 0;
+
+                // Subtract the previous amount and add the new amount to the total
+                totalAmount = totalAmount - previousAmount + newAmount;
+
+                // Update the data-previous-amount attribute with the new value
+                document.querySelector(`[name=amount${recordIndex}]`).dataset.previousAmount = newAmount;
+
+                totalAmountInput.value = totalAmount;
+            }
+        });
+    });
+</script> {% endcomment %}
+
+
+{% endblock main_content %}

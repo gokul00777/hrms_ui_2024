@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <p>Hello Dear </p>
+    <p>{{ employee_name }} reimbursement request with the following details is pending with the accounts department:</p>
+    <ul>
+        <li>Claim Number: {{ bill_no }}</li>
+        <li>Status: Approved by Manager, Pending with Accounts</li>
+    </ul>
+    <p>Please take the following action:</p>
+    <ol>
+        <li>Verify the submitted expenses and supporting documents.</li>
+        <li>Process the reimbursement request and disburse the funds accordingly.</li>
+    </ol>
+
+    <p>Please click the following link to access the application:</p>     
+    <p><a href="{{ application_link }}">{{ application_link }}</a></p>
+
+    <p>Regards,</p>
+    <p>HRMS</p>
+</body>
+</html>

@@ -1,0 +1,203 @@
+{% extends 'hr_management/admin/base_template.html' %}
+
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title; text-center">EDIT WAGE REGISTER</h3>
+        </div>
+        <br>
+        <h3 style="text-align: center;">{{wage_register.employee_id.admin.first_name}} {{wage_register.employee_id.admin.last_name}} </h3>
+        <div class="container">
+            <div class="container-fluid px-1 py-3 mx-auto">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="text-center mb-4 text-info mb-2">
+                                <div class="text-center mb-4 text-info mb-2">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="month">Month:</label>
+                                            <input type="text" name="month" id="month" value="{{ wage_register.month }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="year">Year:</label>
+                                            <input type="text" name="year" id="year" value="{{ wage_register.year }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="days_payable">No of Working Days:</label>
+                                            <input type="number" name="days_payable" id="days_payable"
+                                                value="{{ wage_register.days_payable }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="days_paid">Days Paid:</label>
+                                            <input type="number" name="days_paid" id="days_paid"
+                                                value="{{ wage_register.days_paid }}" class="form-control text-center"
+                                                required>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="basic_salary">Basic Salary:</label>
+                                            <input type="number" name="basic_salary" id="basic_salary"
+                                                value="{{ wage_register.basic_salary }}"
+                                                class="form-control text-center" required readonly> 
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="hra">HRA:</label>
+                                            <input type="number" name="hra" id="hra" value="{{ wage_register.hra }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="conveyance_allowance">Conveyance Allowance:</label>
+                                            <input type="number" name="conveyance_allowance" id="conveyance_allowance"
+                                                value="{{ wage_register.conveyance_allowance }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <input type="checkbox" id="trueFalseCheckbox" name="check_box" value="true">
+                                            <label for="variable_component">Variable Component:</label>
+                                            <input type="number" name="variable_component" id="variable_component"
+                                                value="{{ wage_register.variable_component }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="other_allowns">Other Allow:</label>
+                                            <input type="number" name="other_allowns" id="other_allowns"
+                                                value="{{ wage_register.flexible_component }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="gross_salary">Gross Salary:</label>
+                                            <input type="number" name="gross_salary" id="gross_salary"
+                                                value="{{ wage_register.gross_salary}}" class="form-control text-center"
+                                                step="0.01" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="provident_fund">PF:</label>
+                                            <input type="number" name="provident_fund" id="provident_fund"
+                                                value="{{ wage_register.provident_fund }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="professional_tax">PT:</label>
+                                            <input type="number" name="professional_tax" id="professional_tax"
+                                                value="{{ wage_register.professional_tax }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="income_tax">IT:</label>
+                                            <input type="number" name="income_tax" id="income_tax"
+                                                value="{{ wage_register.income_tax }}" class="form-control text-center"
+                                                required > 
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="esic">ESIC:</label>
+                                            <input type="number" name="esic" id="esic" value="{{ wage_register.esic }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="other_deductions">Other Deductions:</label>
+                                            <input type="number" name="other_deductions" id="other_deductions"
+                                                value="{{ wage_register.other_deductions }}"
+                                                class="form-control text-center" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="total_deductions">Total Deductions:</label>
+                                            <input type="number" name="total_deductions" id="total_deductions"
+                                                value="{{ wage_register.total_deductions }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="net_salary">Net Payable:</label>
+                                            <input type="number" name="net_salary" id="net_salary"
+                                                value="{{ wage_register.net_salary }}" class="form-control text-center"
+                                                required readonly >
+                                        </div>
+                                        <input type="text" name="ctc" id="ctc" value="{{ wage_register.ctc }}"
+                                            class="form-control text-center" required hidden>
+                                        <div class="form-group col-md-4">
+                                            <label for="lwf">LWF:</label>
+                                            <input type="number" name="lwf" id="lwf" value="{{ wage_register.lwf }}"
+                                                class="form-control text-center" required readonly>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="sunday_and_holidays">sunday_and_holidays:</label>
+                                            <input type="number" name="sunday_and_holidays" id="sunday_and_holidays" value="{{ wage_register.sunday_and_holidays }}"
+                                                class="form-control text-center" required>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn-success"
+                                        style="width: 150px; height: 100;">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    const variableComponentInput = document.getElementById('variable_component');
+    const checkbox = document.getElementById('trueFalseCheckbox');
+
+    // Add an event listener to the checkbox
+    checkbox.addEventListener('change', function () {
+        // If the checkbox is checked (value is "true"), enable the input field; otherwise, disable it
+        variableComponentInput.readOnly = !this.checked;
+    });
+</script>
+<script>
+    // Get the input fields
+    const daysPayableInput = document.getElementById('days_payable');
+    const daysPaidInput = document.getElementById('days_paid');
+    const grossSalaryInput = document.getElementById('gross_salary');
+
+    // Add event listeners to the input fields
+    daysPayableInput.addEventListener('input', updateGrossSalary);
+    daysPaidInput.addEventListener('input', updateGrossSalary);
+
+    // Function to update the gross salary
+    function updateGrossSalary() {
+        const daysPayable = Number(daysPayableInput.value);
+        const daysPaid = Number(daysPaidInput.value);
+        const basicSalary = Number(document.getElementById('basic_salary').value);
+        const hra = Number(document.getElementById('hra').value);
+
+        // Check if daysPayable is zero to avoid division by zero
+        if (daysPayable === 0) {
+            // Display an error message
+            grossSalaryInput.value = "Please enter a valid value. The two nearest valid values are 24955433 and 24955.33";
+            return; // Exit the function
+        }
+
+        // Calculate the gross salary based on the formula you provided
+        const grossSalary = (basicSalary + hra + (basicSalary * daysPaid / daysPayable)).toFixed(2);
+
+        // Update the gross salary input field
+        grossSalaryInput.value = grossSalary;
+    }
+</script>
+{% endblock main_content %}

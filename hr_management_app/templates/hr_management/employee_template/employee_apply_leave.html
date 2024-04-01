@@ -1,0 +1,599 @@
+{% extends 'hr_management/employee_template/base_template.html' %}
+{% block page_title %}
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+<h2 class="text-center"></h2>
+{% endblock page_title %}
+{% block custom_css %}
+<style>
+  .leave-date {
+    background-color: #ffcccc;
+    color: #ff0000;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .calendar-container {
+    background: #fff;
+    width: 450px;
+    border-radius: 10px;
+    border: 1px solid blue;
+  }
+
+  .calendar-container header {
+    display: flex;
+    align-items: center;
+    padding: 25px 30px 10px;
+    justify-content: space-between;
+  }
+
+  header .calendar-navigation {
+    display: flex;
+  }
+
+  header .calendar-navigation span {
+    height: 38px;
+    width: 38px;
+    margin: 0 1px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 50%;
+    user-select: none;
+    color: #aeabab;
+    font-size: 1.9rem;
+  }
+
+  .calendar-navigation span:last-child {
+    margin-right: -10px;
+  }
+
+  header .calendar-navigation span:hover {
+    background: #f2f2f2;
+  }
+
+  header .calendar-current-date {
+    font-weight: 500;
+    font-size: 1.45rem;
+  }
+
+  .calendar-body {
+    padding: 20px;
+  }
+
+  .calendar-body ul {
+    list-style: none;
+    flex-wrap: wrap;
+    display: flex;
+    text-align: center;
+  }
+
+  .calendar-body .calendar-dates {
+    margin-bottom: 20px;
+  }
+
+  .calendar-body li {
+    width: calc(100% / 7);
+    font-size: 1.07rem;
+    color: #414141;
+  }
+
+  .calendar-body .calendar-weekdays li {
+    cursor: default;
+    font-weight: 500;
+  }
+
+  .calendar-body .calendar-dates li {
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  .calendar-dates li.inactive {
+    color: #aaa;
+  }
+
+  .calendar-dates li.active {
+    color: #fff;
+  }
+
+  .calendar-dates li::before {
+    position: absolute;
+    content: "";
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .calendar-dates li.active::before {
+    background: #6332c5;
+  }
+
+  .calendar-dates li:not(.active):hover::before {
+    background: #e4e1e1;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    /* Adjust the height as needed */
+  }
+
+  .my-form {
+    width: 1200px;
+    /* Set the desired width for the form */
+    max-width: 100%;
+
+    /* Add scrollbar when content exceeds width */
+  }
+
+  .leave-info {
+    margin-bottom: 10px;
+  }
+
+  .leave-info label {
+    font-weight: bold;
+  }
+
+  .leave-info span {
+    display: inline-block;
+    background-color: #f2f2f2;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .container {
+    padding-left: 220px;
+
+  }
+
+  .my-form {
+    padding-left: 80px;
+  }
+  #rowchange{
+    padding-right:200px;
+  }
+</style>
+{% endblock custom_css %}
+{% block main_content %}
+<!-- Main content -->
+
+<div class="my-form">
+  <section class="content">
+    <div class="container-fluid" style="width:1000px;">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Apply for Leave</h3>
+            </div>
+
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="container">
+              <form action="{% url 'employee_apply_leave_save' %}" method="post">
+                {% csrf_token %}
+                <div class="center">
+                  <div class="card-body">
+                    <div class="row"  id="rowchange">
+                      <div class="col-md-4">
+                        <div class="leave-info">
+                          <label>Casual Leaves:</label>
+                          <span>{{ CasualLeave | floatformat:2 }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="leave-info">
+                          <label>Earned Leaves:</label>
+                          <span>{{ EarnLeave | floatformat:2 }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="leave-info">
+                          <label>Total Leaves:</label>
+                          <span>{{ TotalLeaves | floatformat:2 }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+                        <label>Leave Type</label>
+                        <select class="form-control" name="leave_type" id="leaveTypeSelect">
+                          <option value="">--Select Leave Type--</option>
+                          <option value="Casual">Casual Leave</option>
+                          <option value="Earned">Earned Leave</option>
+                        </select>
+                      </div>
+
+                      {% csrf_token %}
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label>From:</label>
+                          <input type="date" id="leaveStartDate" name="leave_start_date" class="form-control"
+                            placeholder="From Date">
+                        </div>
+
+                        <div class="col-md-6">
+                          <label>To:</label>
+                          <input type="date" id="leaveEndDate" name="leave_end_date" class="form-control"
+                            placeholder="To Date">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Leave Reason</label>
+                        <textarea class="form-control" rows="2" name="leave_msg"></textarea>
+                      </div>
+
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-success " id="applyLeaveButton">Apply for
+                          Leave</button>
+                      </div>
+
+                      <div class="form-group">
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- /.card -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Leave Applied History</h3>
+            </div>
+
+            <div class="table">
+              <table class="table">
+                <tr>
+                  <th>ID</th>
+                  <th>Leave From</th>
+                  <th>Leave To</th>
+                  <th>Leave Type</th>
+                  <th>Leave Message</th>
+                  <th>Leave Status</th>
+                </tr>
+                {% for row in leave_data %}
+                <tr>
+                  <td>{{ row.id }}</td>
+
+                  <td>{{ row.leave_start_date }}</td>
+                  <td>{{ row.leave_end_date }}</td>
+                  <td>{{ row.leave_type }}</td>
+                  <td><textarea name="leave_message" rows="2" cols="30" disabled>{{ row.leave_message }}</textarea></td>
+                  <td>
+                    {% if row.leave_status == 1 %}
+                    <span class="alert alert-success">Approved</span>
+                    {% elif row.leave_status == 2 %}
+                    <span class="alert alert-danger">Rejected</span>
+                    {% else %}
+                    <span class="alert alert-info">Pending</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+<!-- /.content -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // Get a reference to the submit button
+      const submitButton = document.getElementById("applyLeaveButton");
+
+      // Add an event listener to the form submission
+      document.querySelector("form").addEventListener("submit", function(event) {
+          // Disable the submit button to prevent multiple submissions
+          submitButton.disabled = true;
+      });
+  });
+</script> 
+
+<script>
+  const leaveStartDateInput = document.getElementById('leaveStartDate');
+  const leaveEndDateInput = document.getElementById('leaveEndDate');
+
+  leaveStartDateInput.addEventListener('change', function () {
+    // Only update the minimum date constraint
+    leaveEndDateInput.min = this.value;
+  });
+
+  leaveEndDateInput.addEventListener('change', function () {
+    leaveStartDateInput.max = this.value;
+  });
+</script>
+
+<script>
+  // initialize the Calendar component
+  var calendar = new ej.calendars.Calendar({
+    renderDayCell: function (args) {
+      // Get the current date being rendered
+      var currentDate = args.date.getDate();
+
+      // Example: Assuming leave dates are stored in an array called 'leaveDates'
+      var leaveDates = {{ date }
+    }; // Array of leave dates
+
+    // Check if the current date is in the leaveDates array
+    if(leaveDates.includes(currentDate)) {
+      // Apply custom CSS class to highlight the leave day
+      args.element.classList.add('leave-day');
+      }
+    }
+  });
+
+  // Render the initialized calendar.
+  calendar.appendTo('#element');
+</script>
+
+
+<script>
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth();
+
+  const day = document.querySelector(".calendar-dates");
+
+  const currdate = document
+    .querySelector(".calendar-current-date");
+
+  const prenexIcons = document
+    .querySelectorAll(".calendar-navigation span");
+
+  // Array of month names
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  // Function to generate the calendar
+  const manipulate = () => {
+
+    // Get the first day of the month
+    let dayone = new Date(year, month, 1).getDay();
+
+    // Get the last date of the month
+    let lastdate = new Date(year, month + 1, 0).getDate();
+
+    // Get the day of the last date of the month
+    let dayend = new Date(year, month, lastdate).getDay();
+
+    // Get the last date of the previous month
+    let monthlastdate = new Date(year, month, 0).getDate();
+
+    // Variable to store the generated calendar HTML
+    let lit = "";
+
+    // Loop to add the last dates of the previous month
+    for (let i = dayone; i > 0; i--) {
+      lit +=
+        `<li class="inactive">${monthlastdate - i + 1}</li>`;
+    }
+
+    // Loop to add the dates of the current month
+    for (let i = 1; i <= lastdate; i++) {
+
+      // Check if the current date is today
+      let isToday = i === date.getDate()
+        && month === new Date().getMonth()
+        && year === new Date().getFullYear()
+        ? "active"
+        : "";
+      lit += `<li class="${isToday}">${i}</li>`;
+    }
+
+    // Loop to add the first dates of the next month
+    for (let i = dayend; i < 6; i++) {
+      lit += `<li class="inactive">${i - dayend + 1}</li>`
+    }
+
+    // Update the text of the current date element
+    // with the formatted current month and year
+    currdate.innerText = `${months[month]} ${year}`;
+
+    // update the HTML of the dates element
+    // with the generated calendar
+    day.innerHTML = lit;
+  }
+
+  manipulate();
+
+  // Attach a click event listener to each icon
+  prenexIcons.forEach(icon => {
+
+    // When an icon is clicked
+    icon.addEventListener("click", () => {
+
+      // Check if the icon is "calendar-prev"
+      // or "calendar-next"
+      month = icon.id === "calendar-prev" ? month - 1 : month + 1;
+
+      // Check if the month is out of range
+      if (month < 0 || month > 11) {
+
+        // Set the date to the first day of the
+        // month with the new year
+        date = new Date(year, month, new Date().getDate());
+
+        // Set the year to the new year
+        year = date.getFullYear();
+
+        // Set the month to the new month
+        month = date.getMonth();
+      }
+
+      else {
+
+        // Set the date to the current date
+        date = new Date();
+      }
+
+      // Call the manipulate function to
+      // update the calendar display
+      manipulate();
+    });
+  });
+
+</script>
+
+<script>
+  // Get the necessary leave dates from the server-side
+  const leaveDates = {{ leave_dates| safe }}; // Array of leave dates
+
+  // Function to highlight the leave dates in the calendar
+  const highlightLeaveDates = () => {
+    // Get all the date elements in the calendar
+    const dateElements = document.querySelectorAll('.calendar-dates li');
+
+    // Loop through each date element
+    dateElements.forEach((element) => {
+      const date = parseInt(element.innerText);
+
+      // Check if the current date is in the leaveDates array
+      if (leaveDates.includes(date)) {
+        // Apply the "leave-day" class to highlight the leave date
+        element.classList.add('leave-day');
+      }
+    });
+  };
+
+  // Call the function to highlight the leave dates
+  highlightLeaveDates();
+</script>
+
+<script>
+  const casualLeaveBalance = {{ CasualLeave }};
+  const earnLeaveBalance = {{ EarnLeave }};
+
+  const leaveTypeSelect = document.getElementById('leaveTypeSelect');
+  const applyLeaveButton = document.getElementById('applyLeaveButton');
+  const fromDatePicker = document.getElementsByName('leave_start_date')[0];
+  const toDatePicker = document.getElementsByName('leave_end_date')[0];
+
+  const getDayCount = (fromDate, toDate) => {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const startDate = new Date(fromDate);
+    const endDate = new Date(toDate);
+    let dayCount = 0;
+
+    while (startDate <= endDate) {
+      dayCount++;
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    return dayCount;
+  };
+
+  const isLongWeekend = (fromDate, toDate) => {
+    const startDay = new Date(fromDate).getDay();
+    const endDay = new Date(toDate).getDay();
+
+    return startDay === 5 && endDay === 1; // Friday to Monday
+  };
+
+  const updateButtonState = () => {
+    const selectedLeaveType = leaveTypeSelect.value;
+    const fromDateString = fromDatePicker.value;
+    const toDateString = toDatePicker.value;
+    const dayCount = getDayCount(fromDateString, toDateString);
+
+  if (
+    (selectedLeaveType === 'Casual' && (casualLeaveBalance < dayCount || dayCount > 2 || isLongWeekend(fromDateString, toDateString))) ||
+    (selectedLeaveType === 'Earned' && earnLeaveBalance < dayCount)
+    ){
+      applyLeaveButton.disabled = true;
+      applyLeaveButton.style.backgroundColor = 'gray';
+      applyLeaveButton.style.color = 'white';
+      applyLeaveButton.style.cursor = 'not-allowed';
+
+      alert("You don't have sufficient leave or the leave duration is more than two days.");
+    }  else {
+      applyLeaveButton.disabled = false;
+      applyLeaveButton.style.backgroundColor = '';
+      applyLeaveButton.style.color = '';
+      applyLeaveButton.style.cursor = '';
+    }
+  };
+
+  leaveTypeSelect.addEventListener('change', updateButtonState);
+  fromDatePicker.addEventListener('input', updateButtonState);
+  toDatePicker.addEventListener('input', updateButtonState);
+</script>
+
+<script>
+  // Get the error message from the query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const errorMessage = urlParams.get('error');
+
+  // Display the error message in a popup
+  if (errorMessage) {
+    alert(errorMessage);
+  }
+</script>
+
+<script>
+  // Function to check if the employee has selected all required fields
+  const validateForm = () => {
+    const leaveType = leaveTypeSelect.value;
+    const fromDate = fromDatePicker.value;
+    const toDate = toDatePicker.value;
+
+    if (leaveType === "" || fromDate === "" || toDate === "") {
+      // Display the pop-up alert
+      alert("Please select all fields before applying for leave.");
+      return false; // Prevent form submission
+    }
+
+    return true; // Allow form submission
+  };
+
+  // Attach the validation function to the form submission event
+  document.querySelector("form").addEventListener("submit", validateForm);
+</script>
+{% endblock main_content %}

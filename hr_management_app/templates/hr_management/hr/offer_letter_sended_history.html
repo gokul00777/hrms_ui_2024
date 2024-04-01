@@ -1,0 +1,127 @@
+{% extends 'hr_management/hr/base_template.html' %}
+{% load static %}
+
+{% block page_title %}
+<h1>Offer Letter Send</h1>
+{% endblock page_title %}
+
+{% block main_content %}
+{% block custom_css %}
+<style>
+    #myInput {
+        /* width: 0px; Set the desired width */
+        margin-left: auto;
+        /* Shift to the right */
+    }
+</style>
+{% endblock custom_css %}
+
+<div class="table-responsive">
+    <div class="container">
+        <div class="input-group" class="">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search ..." class="form-control-sm">
+            <div class="input-group-append">
+                <span class="input-group-text bg-white">
+                    <i class="fas fa-search text-primary"></i>
+                </span>
+            </div>
+        </div>
+        <table class="table table-striped table-class" id="myTable">
+            <thead style="background-color:aquamarine;">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile No.</th>
+                    <th>Designation</th>
+                    <th>CTC</th>
+                    <th style="padding-left:20px">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer_letter_sended in offer_letters_sended %}
+                <tr>
+                    <td>{{ offer_letter_sended.name }}</td>
+                    <td>{{ offer_letter_sended.email }}</td>
+                    <td>{{ offer_letter_sended.mobile_no }}</td>
+                    <td>{{ offer_letter_sended.designation }}</td>
+                    <td>{{ offer_letter_sended.ctc }}</td>
+                    <td>
+                        <a href="{% url 'view_offer_letter' offer_letter_sended.offerletter_id %}" class="btn btn-primary btn-sm" style="padding: 5px 10px;">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'download_offer_letter' offer_letter_sended.offerletter_id %}" class="btn btn-danger btn-sm" style="padding: 5px 10px;">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table><br>
+        <!-- Start Pagination -->
+        <div class="pagination-container">
+            <nav>
+                <ul class="pagination justify-content-center"> <!-- Add 'justify-content-center' class -->
+                    {% if offer_letters_sended.has_previous %}
+                    <li data-page="prev">
+                        <a href="?page={{ offer_letters_sended.previous_page_number }}"> Previous &nbsp;&nbsp;&nbsp;</a>
+                    </li>
+                    {% endif %}
+                    {% for num in offer_letters_sended.paginator.page_range %}
+                    {% if offer_letters_sended.number == num %}
+                    <li data-page="{{ num }}" class="active">
+                        <span>{{ num }} <span class="sr-only">(current)</span></span>
+                    </li>
+                    {% else %}
+                    <li data-page="{{ num }}">
+                        <a href="?page={{ num }}">&nbsp;&nbsp;&nbsp;{{ num }}&nbsp;&nbsp;&nbsp;</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if offer_letters_sended.has_next %}
+                    <li data-page="next" id="next">
+                        <a href="?page={{ offer_letters_sended.next_page_number }}">&nbsp;&nbsp;&nbsp; Next </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</div>
+<script>
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, th, td, i, j, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        th = table.getElementsByTagName("th");
+
+        // Loop through all table rows, and hide those that don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            var matchFound = false; // Flag to track if a match is found in any of the columns
+            for (j = 0; j < tr[i].cells.length; j++) { // Loop through all cells in the current row
+                td = tr[i].cells[j];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        matchFound = true; // Set the flag if a match is found
+                        break; // Exit the inner loop since a match is found in this row
+                    }
+                }
+            }
+            if (matchFound) {
+                tr[i].style.display = ""; // Show the row if a match is found
+            } else {
+                tr[i].style.display = "none"; // Hide the row if no match is found
+            }
+        }
+
+        // Show the table header
+        for (j = 0; j < th.length; j++) {
+            th[j].style.display = "";
+        }
+    }
+</script>
+{% endblock main_content %}

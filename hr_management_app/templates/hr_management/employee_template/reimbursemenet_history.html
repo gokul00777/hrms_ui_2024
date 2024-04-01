@@ -1,0 +1,110 @@
+
+{% extends 'hr_management/employee_template/base_template.html' %}
+{% load static %}
+
+{% block main_content %}
+
+{% block custom_css %}
+<style>
+    .recheck-button {
+        display: inline-block;
+        width: auto; /* Let the button size adapt to its content */
+        height: auto; /* Let the button size adapt to its content */
+        text-align: center;
+        padding: 10px 20px; 
+    }
+</style>
+{% endblock custom_css %}
+<div class="container-fluid" style="width:1250px;">
+<div class="card card-primary container">
+    <div class="card-header">
+        <h3 class="card-title">Reimbursement History</h3>
+    </div>
+
+    <div class="table">
+        <table class="table">
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Claim No</th>
+                <th>Claim Date</th>
+                <th>Claim Amount</th>
+                <th>Attachment </th>
+                <th>Issue</th>
+                <th>Action</th>
+                <th>Delete Record</th>
+
+            </tr>
+            {% for i in reimbursement %}
+            <tr>
+                <td>{{ i.employee_id.emp_id }}</td>
+                <td>{{ i.employee_id.admin.first_name }} {{ i.employee_id.admin.last_name }}</td>
+                <td>{{ i.bill_no }}</td>
+                <td>{{ i.created_at }}</td>
+                <td>{{ i.total_amount }}</td>     
+                <td>
+                    <a href="{% url 'view_reimbursement' i.id %}" class="btn btn btn-primary">View</a>         
+                       </td>
+                <td>
+                    {% if i.query %}
+                        {{ i.query }}
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
+                <td>
+                    {% if i.reimbursement_status == 1 %}
+                    <span class="btn btn-warning recheck-button">Approved</span>
+                    {% elif i.reimbursement_status == 2 %}
+                    <span class="alert alert-danger recheck-button"><a href="{% url 'edit_reimbursement' id=i.id %}">Re-Send</a></span>
+                    {% elif i.reimbursement_status == 3 %}
+                    <span class="alert alert-success recheck-button ">Payment Done</span>
+                    {% else %}
+                    <span class="alert alert-info recheck-button">Pending</span>
+                    {% endif %}
+                </td>
+                <td >
+                    <span>
+                        {% if i.reimbursement_status == 1 or i.reimbursement_status == 3 %}
+                        <a href="#" class="disabled">
+                            <button class="btn btn-danger recheck-button" disabled>Delete<i class="fas fa-trash-alt" style="color: gray;"></i></button>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'delete_reimbursement' id=i.id %}" class="delete-link">
+                            <button class="btn btn-danger recheck-button" onclick="return confirmDelete();">Delete</button>
+                        </a>
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div class="pagination center-pagination">
+    <span class="step-links">
+        {% if reimbursement.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ reimbursement.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ reimbursement.number }} of {{ reimbursement.paginator.num_pages }}.
+        </span>
+
+        {% if reimbursement.has_next %}
+        <a href="?page={{ reimbursement.next_page_number }}">next</a>
+        <a href="?page={{ reimbursement.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+</div>
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this record?");
+    }
+</script>
+
+
+{% endblock main_content %}

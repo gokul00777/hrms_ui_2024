@@ -1,0 +1,261 @@
+{% extends 'hr_management/hr/base_template.html' %}
+{% load static %}
+
+{% block page_title %}
+<h1>Old Wage Register</h1>
+{% endblock page_title %}
+
+{% block custom_css %}
+<style>
+    #button {
+        padding-top: 30px;
+        margin-left: -140px;
+    }
+
+    .btn-success {
+        margin-left: 40px;
+    }
+
+    .years {
+        padding-left: 11px;
+        margin-right: -70px;
+    }
+
+    .months {
+        padding-right: 11px;
+        margin-left: -70px;
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+
+<div>
+    <form id="month-form" action="{% url 'old_wage_register' %}" method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-4 years">
+                    <label for="year">Select Year:</label>
+                    <select id="year" name="year" class="form-control form-group col-md-6" required>
+                        <option value="">-- Select Year --</option>
+                        {% for year in unique_years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 months">
+                    <label for="month">Select Month:</label>
+                    <select id="month" name="month" class="form-control form-group col-md-6" required>
+                        <option value="">-- Select Month --</option>
+                        {% for month in unique_months %}
+                        <option value="{{ month }}">{{ month }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4" id="button">
+                    <input type="hidden" name="selected_month" id="selected_month">
+                    <input type="hidden" name="selected_year" id="selected_year">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> Wage Register</button>
+                    <button id="downloadButton" class="btn btn-success">
+                        <i class="nav-icon fas fa-download"></i>
+                        <a href="#" style="color: white;">Download Excel</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div><br>
+<div class="table-responsive" id="myTable">
+    <div class="popup">
+        <span class="popup-content">
+            <table class="table table-bordered" id="wageRegisterTable">
+                <thead style="background-color:aquamarine;">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Employee ID</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Sex</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Month</th>
+                        <th scope="col">Year</th>
+                        <th scope="col">UAN</th>
+                        <th scope="col">Nature of Work and Designation</th>
+                        <th scope="col">No of Working Days</th>
+                        <th scope="col">Sunday &amp; Holiday</th>
+                        <th scope="col">Total Payable Days</th>
+                        <th scope="col">Basic</th>
+                        <th scope="col">HRA</th>
+                        <th scope="col">Conveyance</th>
+                        <th scope="col">Statutory Bonus</th>
+                        <th scope="col">Other Allow</th>
+                        <th scope="col">Gross Salary</th>
+                        <th scope="col">PF</th>
+                        <th scope="col">PT</th>
+                        <th scope="col">ESIC</th>
+                        <th scope="col">IT</th>
+                        <th scope="col">LWF</th>
+                        <th scope="col">Other Deductions</th>
+                        <th scope="col">Total Deductions</th>
+                        <th scope="col">Net Payable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for old_wage_register in old_wage_registers %}
+                    <tr>
+                        <td>{{ old_wage_register.employee_id.id }}</td>
+                        <td>{{ old_wage_register.employee_id.emp_id }}</td>
+                        <td>{{ old_wage_register.employee_id.employee_onboarding.first_name }}
+                            {{old_wage_register.employee_id.employee_onboarding.last_name }}</td>
+                        <td>{{ old_wage_register.employee_id.employee_onboarding.gender }}</td>
+                        <td>{{ old_wage_register.age }}</td>
+                        <td>{{ old_wage_register.month }}</td>
+                        <td>{{ old_wage_register.year }}</td>
+                        <td>{{ old_wage_register.employee_id.employee_onboarding.pf_uan_no }}</td>
+                        <td>{{ old_wage_register.employee_id.designation }}</td>
+                        <td>{{ old_wage_register.days_paid }}</td>
+                        {% if old_wage_register.sunday_and_holidays %}
+                        <td>{{ old_wage_register.sunday_and_holidays }}</td>
+                        {% else %}
+                        <td>NA</td>
+                        {% endif %}
+                        <td>{{ old_wage_register.days_payable }}</td>
+                        <td>{{ old_wage_register.basic_salary|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.hra|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.conveyance_allowance|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.variable_component|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.flexible_component|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.gross_salary|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.provident_fund|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.professional_tax|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.esic|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.income_tax|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.lwf|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.other_deductions|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.total_deductions|floatformat:2 }}</td>
+                        <td>{{ old_wage_register.net_salary|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="27" class="text-center">No records available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+<script>
+    document.getElementById('wageRegisterButton').addEventListener('click', function () {
+        var month = document.getElementById('month').value;
+        var year = document.getElementById('year').value;
+        if (month && year) {
+            document.getElementById('noRecordsMessage').style.display = 'none';
+            document.getElementById('downloadButtonContainer').style.display = 'block';
+        } else {
+            document.getElementById('noRecordsMessage').style.display = 'block';
+            document.getElementById('downloadButtonContainer').style.display = 'none';
+        }
+    });
+</script>
+<script>
+    document.getElementById('month').addEventListener('change', function () {
+        var month = this.value;
+        var year = document.getElementById('year').value;
+        if (month && year) {
+            document.getElementById('noRecordsMessage').style.display = 'none';
+            document.querySelector('button[type="submit"]').disabled = false;
+        } else {
+            document.getElementById('noRecordsMessage').style.display = 'block';
+            document.querySelector('button[type="submit"]').disabled = true;
+        }
+    });
+
+    document.getElementById('year').addEventListener('change', function () {
+        var month = document.getElementById('month').value;
+        var year = this.value;
+        if (month && year) {
+            document.getElementById('noRecordsMessage').style.display = 'none';
+            document.querySelector('button[type="submit"]').disabled = false;
+        } else {
+            document.getElementById('noRecordsMessage').style.display = 'block';
+            document.querySelector('button[type="submit"]').disabled = true;
+        }
+    });
+</script>
+
+
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-------------------- Download Excell Sheet  -------------------------->
+<script>
+    function downloadExcel() {
+        // Get the table element
+        var table = document.getElementById("wageRegisterTable");
+
+        // Create a new Excel workbook
+        var workbook = XLSX.utils.book_new();
+
+        // Convert the table to a worksheet
+        var worksheet = XLSX.utils.table_to_sheet(table);
+
+        // Remove blank rows
+        var data = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false });
+        worksheet = XLSX.utils.json_to_sheet(data, { skipHeader: true });
+
+        // Calculate column widths based on the content
+        var columnWidths = [];
+        var rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        rows.forEach(function (row) {
+            row.forEach(function (cell, columnIndex) {
+                var cellContentLength = cell ? String(cell).length : 10; // Default width if cell is empty
+                if (!columnWidths[columnIndex] || cellContentLength > columnWidths[columnIndex]) {
+                    columnWidths[columnIndex] = cellContentLength;
+                }
+            });
+        });
+
+        // Set the column widths in the worksheet
+        worksheet["!cols"] = columnWidths.map(function (width) {
+            return { wch: width + 2 }; // Add some padding to the calculated width
+        });
+
+        // Set the center alignment for all cells
+        var range = XLSX.utils.decode_range(worksheet["!ref"]);
+        for (var row = range.s.r; row <= range.e.r; row++) {
+            for (var col = range.s.c; col <= range.e.c; col++) {
+                var cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                var cell = worksheet[cellAddress];
+                if (cell && cell.t === "s") {
+                    cell.s = { alignment: { horizontal: "center", vertical: "center" } };
+                }
+            }
+        }
+
+        // Add the worksheet to the workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Wage Register");
+
+        // Convert the workbook to an Excel file
+        var excelFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+        // Create a Blob object from the Excel file data
+        var blob = new Blob([excelFile], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+        // Create a temporary link element to trigger the file download
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "wage_register.xlsx";
+        document.body.appendChild(link); // Append the link to the document body
+        link.click();
+
+        // Clean up the temporary link element
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+    // Attach the downloadExcel function to the button click event
+    document.getElementById("downloadButton").addEventListener("click", downloadExcel);
+</script>
+
+{% endblock main_content %}

@@ -1,0 +1,7 @@
+<!-- create_salary_slip.html -->
+<form method="POST" action="{% url 'create_salary_slip' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  

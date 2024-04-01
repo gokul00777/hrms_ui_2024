@@ -1,0 +1,655 @@
+{% extends 'hr_management/manager_template/base_template.html' %}
+{% load static %}
+{% block title %} Profile{% endblock title %}
+{% block main_content %}
+
+<style>
+    .form-row{
+        padding-left:10px;
+    }
+
+</style>
+
+<div class="container-fluid" style="width:900px;">
+    <div class="container-fluid px-1 py-3 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-12">
+                <div class="card ">
+                    <div class="text-center mb-4 text-info mb-2">
+                        <div class="text-center mb-4 text-info mb-2">
+
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title; text-center">Employee Personal Details</h3>
+                                </div>
+                            </div>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{message.tags}}">
+                                {% if message.tags %} {% endif %}{{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+
+                    </div>
+                
+                    <form method="POST" action="" enctype="multipart/form-data" class="container">
+                        {% csrf_token %}
+                        <div class="container justify-content-center">
+                            <div class="form-row ">
+                                <div class="form-group col-md-6">
+                                    <label>Empolyee ID</label>
+                                    <input type="text" class="form-control" name="id" value="{{ employee.emp_id }}"
+                                        disabled="disabled">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Username</label>
+                                    <input type="text" class="form-control" name="username" value="{{ user.username }}"
+                                        disabled="disabled">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>First Name</label>
+                                    <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Last Name</label>
+                                    <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" name="email" value="{{ user.email }}"
+                                        disabled="disabled">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.pf_uan_no.label_tag }} {{ emp_onboarding_form.pf_uan_no }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.contact_no.label_tag }}
+                                    <input type="text" class="mobile-number-input form-control" name="{{ emp_onboarding_form.contact_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Conact number must be 10 digits long.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.emergency_contact_no.label_tag }}
+                                    <input type="text" class="mobile-number-input form-control" name="{{ emp_onboarding_form.emergency_contact_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Emergency Conact number must be 10 digits long.</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.pancard_no.label_tag }}
+                                    <input type="text" class="pan-card-number-input form-control" name="{{ emp_onboarding_form.pancard_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Invalid PAN card number. Please enter in the format ABCDE1234F.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.adhaar_no.label_tag }}
+                                    <input type="text" class="aadhar-number-input form-control" name="{{ emp_onboarding_form.adhaar_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Aadhar number must be 12 digits long.</span>
+                                </div>  
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.blood_group.label_tag }}
+                                    <input type="text" class="blood-group-input form-control" name="{{ emp_onboarding_form.blood_group.name }}" >
+                                    <span class="blood-group-error-message" style="color: red; display: none;">Invalid blood group. Please select a valid blood group (e.g., A+, A-, B+, B-, AB+, AB-, O+, O-).</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.dob.label_tag }} {{ emp_onboarding_form.dob }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.gender.label_tag }} {{ emp_onboarding_form.gender }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.marital_status.label_tag }} {{ emp_onboarding_form.marital_status }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.highest_qualification.label_tag }} {{emp_onboarding_form.highest_qualification }}  
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.previous_company_name.label_tag }} {{ emp_onboarding_form.previous_company_name }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_onboarding_form.date_of_joining.label_tag }}<b>(Current Company)</b> {{ emp_onboarding_form.date_of_joining }} 
+                                </div>
+                            </div>
+
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title; text-center">Employee Current Address</h3>
+                                </div>
+                            </div>
+                                <div class="form-row current-address">
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.add_type.label_tag }} {{ emp_address_form.add_type }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.address1.label_tag }} {{ emp_address_form.address1 }}
+                                    </div>
+                                </div>
+                                <div class="form-row current-address">
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.address2.label_tag }} {{ emp_address_form.address2 }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.zip_code.label_tag }}
+                                        <input type="text" class="zip-code-input form-control" name="{{ emp_address_form.zip_code.name }}" >
+                                        <span class="zip-code-error-message" style="color: red; display: none;">Invalid ZIP code. Please enter a valid ZIP code.</span>
+                                    </div>                                                                       
+                                </div>
+                                <div class="form-row current-address">
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.city.label_tag }} {{ emp_address_form.city }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.dist.label_tag }} {{ emp_address_form.dist }}
+                                    </div>
+                                </div>
+                                <div class="form-row current-address">
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.state.label_tag }} {{ emp_address_form.state }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ emp_address_form.country.label_tag }} {{ emp_address_form.country }}
+                                    </div>
+                
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="same-address-checkbox" onclick="copyAddress()">
+                                    <label for="same_address_checkbox">Same as current address</label>
+                                </div>                                
+
+
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title; text-center">Employee Permanent Address</h3>
+                                </div>
+                            </div>
+                            <div class="form-row permanent-address">
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_add_type.label_tag }} {{ emp_perment_address_form.per_add_type}}
+                                    
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_address1.label_tag }} {{ emp_perment_address_form.per_address1 }}
+                                    
+                                </div>
+                            </div>
+                            <div class="form-row permanent-address">
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_address2.label_tag }} {{ emp_perment_address_form.per_address2}}
+                                    
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_zip_code.label_tag }}
+                                    <input type="text" class="zip-code-input form-control" name="{{ emp_perment_address_form.per_zip_code.name }}" >
+                                    <span class="zip-code-error-message" style="color: red; display: none;">Invalid ZIP code. Please enter a valid ZIP code.</span>
+                                </div>
+                            </div>
+                            <div class="form-row permanent-address">
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_city.label_tag }} {{ emp_perment_address_form.per_city }}
+                                    
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_dist.label_tag }} {{ emp_perment_address_form.per_dist }}
+                                </div>
+                            </div>
+
+                            <div class="form-row permanent-address">
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_state.label_tag }} {{ emp_perment_address_form.per_state }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_perment_address_form.per_country.label_tag }} {{ emp_perment_address_form.per_country }}
+                                </div>
+                            </div>
+                        
+                        
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title; text-center">Employee Family Details</h3>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.member1_name.label_tag }} {{ emp_family_form.member1_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber1_dob.label_tag }} {{ emp_family_form.merber1_dob }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber1_aadhar_no.label_tag }}
+                                    <input type="text" class="aadhar-number-input form-control" name="{{ emp_family_form.merber1_aadhar_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Aadhar number must be 12 digits long.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.relationship1.label_tag }} {{ emp_family_form.relationship1 }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.member2_name.label_tag }} {{ emp_family_form.member2_name }}
+                                    
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber2_dob.label_tag }} {{ emp_family_form.merber2_dob }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber2_aadhar_no.label_tag }}
+                                    <input type="text" class="aadhar-number-input form-control" name="{{ emp_family_form.merber2_aadhar_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Aadhar number must be 12 digits long.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.relationship2.label_tag }} {{ emp_family_form.relationship2 }}
+                                </div>
+                            </div>
+                            <div class="form-row family-member-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.member3_name.label_tag }} {{ emp_family_form.member3_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber3_dob.label_tag }} {{ emp_family_form.merber3_dob }}
+                                </div>
+                            </div>
+                            
+                            <div class="form-row family-member-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber3_aadhar_no.label_tag }}
+                                    <input type="text" class="aadhar-number-input form-control" name="{{ emp_family_form.merber3_aadhar_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Aadhar number must be 12 digits long.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.relationship3.label_tag }} {{ emp_family_form.relationship3 }}
+                                </div>
+                            </div>
+
+                           
+                            <div class="form-row family-member-row" style="display:none;">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.member4_name.label_tag }} {{ emp_family_form.member4_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber4_dob.label_tag }} {{ emp_family_form.merber4_dob }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber4_aadhar_no.label_tag }}
+                                    <input type="text" class="aadhar-number-input form-control" name="{{ emp_family_form.merber4_aadhar_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Aadhar number must be 12 digits long.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.relationship4.label_tag }} {{ emp_family_form.relationship4 }}
+                                </div>
+                            </div>
+            
+                            <div class="form-row family-member-row" style="display:none;">
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.member5_name.label_tag }} {{ emp_family_form.member5_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber5_dob.label_tag }} {{ emp_family_form.merber5_dob }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.merber5_aadhar_no.label_tag }}
+                                    <input type="text" class="aadhar-number-input form-control" name="{{ emp_family_form.merber5_aadhar_no.name }}" >
+                                    <span class="error-message" style="color: red; display: none;">Aadhar number must be 12 digits long.</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_family_form.relationship5.label_tag }} {{ emp_family_form.relationship5 }}
+                                </div>
+                            </div>
+                            
+                             
+                            <div>
+                                <button id="add-family-member" class="btn btn-primary" type="button">
+                                    <i class="fas fa-plus"></i> Add Family Member
+                                </button>
+                            </div>
+                            <br>
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title; text-center">Employee Bank Details</h3>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_bank_form.bank_name.label_tag }} {{ emp_bank_form.bank_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_bank_form.branch.label_tag }} {{ emp_bank_form.branch }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_bank_form.account_number.label_tag }} {{ emp_bank_form.account_number }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_bank_form.ifsc_number.label_tag }} {{ emp_bank_form.ifsc_number }}
+                                </div>
+                            </div>
+
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title; text-center">Employee document Details</h3>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.employee_photo.label_tag }} {{ emp_document_form.employee_photo }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.employee_aadhar.label_tag }} {{ emp_document_form.employee_aadhar }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.employee_pan.label_tag }} {{ emp_document_form.employee_pan }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.ssc_marksheet.label_tag }} {{ emp_document_form.ssc_marksheet }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.hsc_marksheet.label_tag }} {{ emp_document_form.hsc_marksheet }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.diploma_marksheet.label_tag }} {{emp_document_form.diploma_marksheet }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.degree_marksheet.label_tag }} {{ emp_document_form.degree_marksheet }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.bank_passbook.label_tag }} {{ emp_document_form.bank_passbook }}
+                                </div>
+                            </div>
+                            <div class="form-row document-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.passport.label_tag }} {{ emp_document_form.passport }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.reliving_letter.label_tag }} {{ emp_document_form.reliving_letter}}
+                                </div>
+                            </div>
+                            <div class="form-row document-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.family_member1_aadhar.label_tag }} {{emp_document_form.family_member1_aadhar }}
+                                    
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.family_member2_aadhar.label_tag }} {{ emp_document_form.family_member2_aadhar }}
+                                    
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ emp_document_form.family_member3_aadhar.label_tag }}{{emp_document_form.family_member3_aadhar }}
+                                </div>
+                                                            
+                                <div class="form-group col-md-6 document-row" style="display:none;"> 
+                                    {{ emp_document_form.family_member4_aadhar.label_tag }}{{emp_document_form.family_member4_aadhar }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 document-row" style="display:none;">
+                                   
+                                    {{ emp_document_form.family_member5_aadhar.label_tag }}{{emp_document_form.family_member5_aadhar }}
+                                    
+                                </div>
+                            </div>
+                          
+                           
+                        <div>
+                            <button id="add-document" class="btn btn-primary" type="button">
+                                <i class="fas fa-plus"></i> Add Document
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <div class="container">
+                                <button type="submit" class="btn btn-info rounded-pill m-l-2 ">Submit</button>
+                                <button type="submit" class="btn btn-danger rounded-pill m-2">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block custom_js %}
+<!-- jQuery Library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Function to check ZIP code validity for a specific input field
+    function validateZipCode(inputField) {
+        var zipCode = inputField.val();
+        var zipCodeRegex = /^\d{6}$/;
+        return zipCodeRegex.test(zipCode);
+    }
+
+    // Event handler for ZIP code inputs
+    $('.zip-code-input').on('keyup', function() {
+        var inputField = $(this);
+        var errorMessage = inputField.next('.zip-code-error-message');
+        errorMessage.toggle(!validateZipCode(inputField));
+    });
+
+    // Function to check Aadhar number validity for a specific row
+    function validateAadharNumber(inputField) {
+        var aadharNumber = inputField.val();
+        var aadharRegex = /^\d{12}$/;
+        var isValid = aadharNumber.length === 12 && aadharRegex.test(aadharNumber);
+        inputField.closest('.form-group').find('.error-message').toggle(!isValid);
+        return isValid;
+    }
+
+    // Event handler for Aadhar number inputs within each row
+    $('.aadhar-number-input').on('input', function() {
+        validateAadharNumber($(this));
+    });
+
+    // Function to check mobile number validity for a specific row
+    function validateMobileNumber(inputField) {
+        var mobileNumber = inputField.val();
+        var mobileRegex = /^[6-9]\d{9}$/;
+        var isValid = mobileRegex.test(mobileNumber);
+        inputField.closest('.form-group').find('.error-message').toggle(!isValid);
+        return isValid;
+    }
+
+    // Event handler for mobile number inputs within each row
+    $('.mobile-number-input').on('input', function() {
+        validateMobileNumber($(this));
+    });
+
+    // Function to check PAN card number validity for a specific row
+    function validatePANCardNumber(inputField) {
+        var panCardNumber = inputField.val().toUpperCase();
+        var panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+        var isValid = panRegex.test(panCardNumber);
+        inputField.closest('.form-group').find('.error-message').toggle(!isValid);
+        return isValid;
+    }
+
+    // Event handler for PAN card number inputs within each row
+    $('.pan-card-number-input').on('input', function() {
+        validatePANCardNumber($(this));
+    });
+
+    // Function to check blood group validity for a specific row
+    function validateBloodGroup(inputField) {
+        var selectedBloodGroup = inputField.val().toUpperCase();
+        var validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+        return validBloodGroups.includes(selectedBloodGroup);
+    }
+
+    // Event handler for blood group inputs within each row
+    $('.blood-group-input').on('keyup', function() {
+        var inputField = $(this);
+        var errorMessage = inputField.next('.blood-group-error-message');
+        errorMessage.toggle(!validateBloodGroup(inputField));
+    });
+
+    $(document).ready(function () {
+        let memberCounter = 2; // Start at 2 since you already have fields for member 4 and member 5
+
+        // Function to show/hide the family member fields
+        function toggleFamilyMemberFields() {
+            $('.family-member-row').each(function(index, element) {
+                $(element).toggle(index < memberCounter);
+            });
+        }
+
+        // Call the function on page load
+        toggleFamilyMemberFields();
+
+        // Event handler for the "Add Family Member" button
+        $('#add-family-member').on('click', function() {
+            memberCounter++;
+            toggleFamilyMemberFields();
+        });
+
+        // Function to show/hide the document fields
+        function toggleDocumentFields() {
+            $('.document-row').each(function(index, element) {
+                $(element).toggle(index < memberCounter);
+            });
+        }
+
+        // Call the function on page load
+        toggleDocumentFields();
+
+        // Event handler for the "Add Document" button
+        $('#add-document').on('click', function() {
+            memberCounter++;
+            toggleDocumentFields();
+        });
+    });
+
+    // Get the checkbox element and the address input elements
+    const sameAddressCheckbox = document.getElementById('same-address-checkbox');
+    const currentAddressInputs = document.querySelectorAll('.current-address input');
+    const permanentAddressInputs = document.querySelectorAll('.permanent-address input');
+
+    // Function to copy the current address to the permanent address fields
+    function copyAddress() {
+        if (sameAddressCheckbox.checked) {
+            for (let i = 0; i < currentAddressInputs.length; i++) {
+                permanentAddressInputs[i].value = currentAddressInputs[i].value;
+            }
+        }
+    }
+
+    // Add an event listener to the checkbox to call the copyAddress function when it is clicked
+    sameAddressCheckbox.addEventListener('click', copyAddress);
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        let memberCounter = 2; // Start at 2 since you already have fields for member 4 and member 5
+
+        // Function to show/hide the family member fields
+        function toggleFamilyMemberFields() {
+            $('.family-member-row').each(function(index, element) {
+                if (index >= memberCounter) {
+                    $(element).hide();
+                } else {
+                    $(element).show();
+                }
+            });
+        }
+        // Call the function on page load
+        toggleFamilyMemberFields();
+
+        // Event handler for the "Add Family Member" button
+        $('#add-family-member').on('click', function() {
+            memberCounter++;
+            toggleFamilyMemberFields();
+        });
+           
+    });
+
+
+        $(document).ready(function () {
+            let memberCounter = 2; // Start at 2 since you already have fields for member 4 and member 5
+
+            // Function to show/hide the family member fields
+            function toggleFamilyMemberFields() {
+                $('.document-row').each(function(index, element) {
+                    if (index >= memberCounter) {
+                        $(element).hide();
+                    } else {
+                        $(element).show();
+                    }
+                });
+            }
+
+            // Call the function on page load
+            toggleFamilyMemberFields();
+
+            // Event handler for the "Add Family Member" button
+            $('#add-document').on('click', function() {
+                memberCounter++;
+                toggleFamilyMemberFields();
+            });
+            
+        
+    });
+</script>
+
+<script>
+    // Get the checkbox element and the address input elements
+    const sameAddressCheckbox = document.getElementById('same-address-checkbox');
+    const currentAddressInputs = document.querySelectorAll('.current-address input');
+    const permanentAddressInputs = document.querySelectorAll('.permanent-address input');
+
+    // Function to copy the current address to the permanent address fields
+    function copyAddress() {
+        if (sameAddressCheckbox.checked) {
+            for (let i = 0; i < currentAddressInputs.length; i++) {
+                permanentAddressInputs[i].value = currentAddressInputs[i].value;
+            }
+        }
+    }
+
+    // Add an event listener to the checkbox to call the copyAddress function when it is clicked
+    sameAddressCheckbox.addEventListener('click', copyAddress);
+</script>
+
+{% endblock custom_js %}
+{% endblock main_content%}

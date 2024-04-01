@@ -1,0 +1,217 @@
+{% extends 'hr_management/admin/base_template.html' %}
+
+{% block title %}Employee Salary{% endblock %}
+
+{% block custom_css %}
+<style>
+  form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: 100%;
+    padding-right: 80px;
+    padding-left: 0px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .form-container {
+    width: 100%;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .content {
+    flex: 1;
+  }
+  .container{
+    padding-left: 100px;
+  }
+
+  .custom-error {
+        max-width: 300px; /* Adjust the width to your desired value */
+        margin: 0 auto; /* Add this line to center the element */
+        text-align: center; 
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="form-group">
+  {% if messages %}
+  {% for message in messages %}
+  {% if message.tags == 'error' %}
+  <div id="error-message" class="alert alert-danger custom-error" style="margin-top:10px">{{ message }}</div>
+  {% endif %}
+  {% if message.tags == 'success' %}
+  <div id="success-message" class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+</div>
+
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="container-fluid" style="width:900px;">
+      <div class="align-center">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Wage Register</h3>
+              </div>
+              <form action="" method="POST">
+                {% csrf_token %}
+                
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="year">Select Year:</label>
+                        <select id="year" name="year" class="form-control" onchange="populateMonths();">
+                          {% for year in remaining_years %}
+                          <option value="{{ year }}">{{ year }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="month">Select Month:</label>
+                        <select id="month" name="month" class="form-control" onchange="getDaysInMonth();">
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="month_name">Selected Month:</label>
+                        <input type="text" id="month_name" name="month_name" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="days">Number of Days:</label>
+                        <input type="text" id="days" name="days" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row justify-content-center">
+                    <div class="form-group col-md-4">
+                      <label for="paid">Paid Days:</label>
+                      <input type="text" id="paid" name="paid" class="form-control">
+                    </div>
+                  </div><br>
+                  <div class="form-row justify-content-center">
+                    <button type="submit" class="btn btn-success">
+                      <i class="fa fa-file-invoice"></i>
+                      Generate Salary Slip
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  var remainingYears = {
+    {% for year, months in remaining_years.items %}
+      "{{ year }}": {{ months|safe }},
+    {% endfor %}
+  };
+
+  function populateMonths() {
+    var yearSelect = document.getElementById("year");
+    var monthSelect = document.getElementById("month");
+    var selectedYear = yearSelect.value;
+
+    // Clear existing options
+    monthSelect.innerHTML = "";
+
+    // Get the months for the selected year from the remainingYears object
+    var months = remainingYears[selectedYear];
+
+    // Create options for each month
+    for (var i = 0; i < months.length; i++) {
+      var option = document.createElement("option");
+      option.value = months[i];
+      option.textContent = months[i];
+      monthSelect.appendChild(option);
+    }
+  }
+
+  function getDaysInMonth() {
+    var monthSelect = document.getElementById("month");
+    var monthNameInput = document.getElementById("month_name");
+    var daysInput = document.getElementById("days");
+    var selectedMonth = monthSelect.value;
+
+    // Set the selected month name
+    monthNameInput.value = selectedMonth;
+
+    // Perform other actions related to getting days in the month
+    // ...
+
+    // Set the number of days based on the selected month and year
+    var yearSelect = document.getElementById("year");
+    var selectedYear = parseInt(yearSelect.value);
+    var daysInMonth = calculateDaysInMonth(selectedMonth, selectedYear);
+    daysInput.value = daysInMonth;
+  }
+  
+  function calculateDaysInMonth(month, year) {
+    // Implement your logic to calculate the number of days in the given month and year
+    // Replace the logic below with your own
+  
+    if (month === "February") {
+      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+        return 29; // Leap year
+      } else {
+        return 28; // Non-leap year
+      }
+    } else if (
+      month === "April" ||
+      month === "June" ||
+      month === "September" ||
+      month === "November"
+    ) {
+      return 30;
+    } else {
+      return 31;
+    }
+  }
+
+  // Call the populateMonths function on page load if a year is already selected
+  if (document.getElementById("year").value !== "") {
+    populateMonths();
+  }
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(function () {
+          var errorMessage = document.getElementById("error-message");
+          var successMessage = document.getElementById("success-message");
+
+          if (errorMessage) {
+              errorMessage.style.display = "none";
+          }
+          if (successMessage) {
+              successMessage.style.display = "none";
+          }
+      }, 1000); // 30 seconds
+  });
+</script>
+
+{% endblock main_content %}
